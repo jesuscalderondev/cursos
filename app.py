@@ -18,6 +18,8 @@ def index():
 @app.route('/inicio_sesion', methods = ['POST'])
 def iniciarSesion():
     operacion = "Fallida"
+    llave = "null"
+    mensaje = "Sin sesión"
     if validarSesion() != True:
         credenciales = request.get_json()
         clave = credenciales["clave"]
@@ -28,16 +30,25 @@ def iniciarSesion():
             
             if usuario != None and validarClave(usuario.clave, clave):
                 nube['llave_ingreso'] = usuario.ID
+                llave = llaveAcceso()
                 operacion = "Exitosa"
             else:
                 mensaje = 'Usuario o clave incorrect@'
         else:
             mensaje = "Caracteres especiales detectados, por favor intentar sin insertar caracteres como '@,/.#'"
             
-    return jsonify(respuesta = operacion, mensaje = mensaje)
+    return jsonify(respuesta = operacion, mensaje = mensaje, llave = llave)
 
+""" 
+@app.route('/subir_estudiantes', methods = ['POST'])
+def subirEstudiantes():
+    if validarSesion():
+        archivo = request.files["archivo"]
+        
+        if ".xlsx" in archivo.filename:
+            archivo.save("/static/listaEstudiantes.xlsx")
 
-
+    return  """
         
 
 #------------------------------------  Cursos ------------------------------------
@@ -88,4 +99,5 @@ def filtrarDocente():
 app.register_blueprint(apis)
 
 if __name__ == '__main__':
+    Base.metadata.create_all(engine)
     app.run(debug=True)
