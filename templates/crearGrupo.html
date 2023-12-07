@@ -9,6 +9,44 @@
       >
         <p class="fs-2">Crear Grupo</p>
         <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
+            <input
+              type="text"
+              class="form-control" style="margin-right:5px"
+              placeholder="Nombre"
+              aria-label="Nombre"
+              id="nombre"
+            />
+            <input
+                type="text"
+                class="form-control" style="margin-left:5px"
+                placeholder="Codigo"
+                aria-label="Codigo"
+                id="codigo"
+            />
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
+          <div style="width:100%; margin-right:5px">
+            <label for="horaInicio" class="form-label">Fecha de inicio</label>
+            <input
+                id="fechaInicio"
+                type="date"
+                class="form-control"
+                placeholder="Fecha inicio"
+                aria-label="Fecha inicio"
+            />
+          </div>
+          <div style="width:100%; margin-left:5px">
+            <label for="horaFinalizacion" class="form-label">Fecha de finalizacion</label>
+            <input
+                id="fechaFinalizacion"
+                type="date"
+                class="form-control" 
+                placeholder="Fecha final"
+                aria-label="Fecha final"
+            />
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
             <div style="width:100%; margin-right:5px">
               <label for="horaInicio" class="form-label">Hora de inicio</label>
               <input
@@ -20,30 +58,22 @@
               />
             </div>
             <div style="width:100%; margin-left:5px">
-              <label for="horaFinalizacion" class="form-label">Hora de inicio</label>
+              <label for="horaFinalizacion" class="form-label">Hora de finalizacion</label>
               <input
                   id="horaFinalizacion"
                   type="time"
                   class="form-control" 
-                  placeholder="Hora inicio"
-                  aria-label="Hora inicio"
+                  placeholder="Hora final"
+                  aria-label="Hora final"
               />
             </div>
         </div>
-        <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
-            <input
-                type="text"
-                class="form-control" style="margin-right:5px"
-                placeholder="Codigo"
-                aria-label="Codigo"
-            />
-            <input
-              type="text"
-              class="form-control" style="margin-left:5px"
-              placeholder="Apellido Materno"
-              aria-label="Apellido Materno"
-            />
-        </div>
+        <select class="form-select mb-3" aria-label="Default select example" id="docente">
+          <option selected>Seleccionar docente</option>
+          <option value="1">One</option>
+          <option value="2">Two</option>
+          <option value="3">Three</option>
+        </select>
         <button
           type="button"
           class="btn btn-primary"
@@ -54,6 +84,52 @@
         </button>
       </div>
     </div>
+    <script>
+      var boton = document.getElementById("async");
+    
+        boton.addEventListener('click', function(){
+    
+          var nombre = document.getElementById("nombre").value;
+          var codigo = document.getElementById("codigo").value;
+          var horaInicio = document.getElementById("horaInicio").value;
+          var horaFinalizacion = document.getElementById("horaFinalizacion").value;
+          var fechaInicio = document.getElementById("fechaInicio").value;
+          var fechaFinalizacion = document.getElementById("fechaFinalizacion").value;
+          var docente = document.getElementById("docente").value;
+    
+          var formData = new FormData();
+          var jsonData = {nombre,codigo,horaInicio,horaFinalizacion,fechaInicio,fechaFinalizacion,docente};
+    
+    
+            fetch('/crear', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+    
+            .then(
+                response => response.json()
+            )
+    
+            .then(
+                data => {
+                    console.log(data);
+                    if(data.respuesta == "Exitosa"){
+                        location.replace("/");
+                    }
+                    else{
+                        //Debes poner una notificación y mostrar el mensaje
+                    }
+                }
+            )
+    
+            .catch(error =>{
+                //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
+            })
+        })
+    </script>
       {%endblock%}
     </div>
     
