@@ -1,0 +1,40 @@
+{% extends 'template.html'%} {%block titulo%} Crear Curso {%endblock%} {%block
+cuerpo%}
+<div
+  class="col-md-12 d-flex justify-content-center align-items-center"
+  style="height: 100vh"
+>
+  <div
+    class="col-md-4 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column"
+  >
+    <p class="fs-2">Crear Curso</p>
+    <input
+      type="text"
+      class="form-control mb-3"
+      placeholder="Nombre"
+      aria-label="Nombre"
+    />
+    <input
+      type="text"
+      class="form-control mb-3"
+      placeholder="Ciclo"
+      aria-label="Ciclo"
+    />
+    <select class="form-select mb-3" aria-label="Default select example">
+        <option selected>Seleccionar docente</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+    <button
+      type="button"
+      class="btn btn-primary"
+      style="width: 210px"
+      id="async"
+    >
+      Crear
+    </button>
+  </div>
+</div>
+  {%endblock%}
+</div>
