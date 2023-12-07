@@ -49,12 +49,13 @@ def crearDocente(form):
     clave = generarClave(nombres, apellidoPaterno)
     print(clave)
     clave = codificar(clave)
-    usuario = Usuario(email, clave, 'Docente')
-    session.add(usuario)
-    session.commit()
-    docente = Docente(nombres, apellidoPaterno, apellidoMaterno, fechaNacimiento, usuario.id)
-    session.add(docente)
-    session.commit()
+    with Session() as session:
+        usuario = Usuario(email, clave, 'Docente')
+        session.add(usuario)
+        session.commit()
+        docente = Docente(nombres, apellidoPaterno, apellidoMaterno, fechaNacimiento, usuario.id)
+        session.add(docente)
+        session.commit()
 
 
 def crearAdministrador(form):
@@ -72,6 +73,15 @@ def crearAdministrador(form):
     admin = Administrador(nombres, apellidoPaterno, apellidoMaterno, usuario.id)
     session.add(admin)
     session.commit()
+    
+def crearCurso(form):
+    with Session() as session:
+        nombre = form["nombre"]
+        ciclo = form["ciclo"]
+        duracion = form["duracion"]
+        curso = Curso(duracion, ciclo, nombre)
+        session.add(curso)
+        session.commit()
     
     
 def obtenerRol(usuario:object):
