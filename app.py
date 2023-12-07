@@ -16,7 +16,7 @@ def index():
                 rol = session.get(Usuario, administrador.usuario)
                 return render_template('administrador.html', usuario = administrador, rol = rol)
             rol = session.get(Usuario, docente.usuario)
-        return render_template('docente.html', usuario = docente)
+        return render_template('docente.html', usuario = docente, rol = rol)
     return render_template('index.html')
 
 @app.route('/inicio_sesion', methods = ['POST'])
