@@ -13,14 +13,16 @@ cuerpo%}
       class="form-control mb-3"
       placeholder="Nombre"
       aria-label="Nombre"
+      id="nombre"
     />
     <input
       type="text"
       class="form-control mb-3"
       placeholder="Ciclo"
       aria-label="Ciclo"
+      id="ciclo"
     />
-    <select class="form-select mb-3" aria-label="Default select example">
+    <select class="form-select mb-3" aria-label="Default select example" id="docente">
         <option selected>Seleccionar docente</option>
         <option value="1">One</option>
         <option value="2">Two</option>
@@ -36,5 +38,47 @@ cuerpo%}
     </button>
   </div>
 </div>
+<script>
+  var boton = document.getElementById("async");
+
+    boton.addEventListener('click', function(){
+
+        var nombre = document.getElementById("nombre").value;
+        var ciclo = document.getElementById("ciclo").value;
+        var docente = document.getElementById("docente").value;
+
+        var formData = new FormData();
+        var jsonData = {nombre : nombre, ciclo : ciclo, docente:docente};
+
+
+        fetch('/registrar_curso', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+
+        .then(
+            response => response.json()
+        )
+
+        .then(
+            data => {
+                console.log(data);
+                if(data.respuesta == "Exitosa"){
+                    location.replace("/");
+                }
+                else{
+                    //Debes poner una notificación y mostrar el mensaje
+                }
+            }
+        )
+
+        .catch(error =>{
+            //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
+        })
+    })
+</script>
   {%endblock%}
 </div>
