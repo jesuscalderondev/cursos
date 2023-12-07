@@ -1,84 +1,59 @@
 {% extends 'template.html'%} {%block titulo%} Crear Curso {%endblock%} {%block
-cuerpo%}
-<div
-  class="col-md-12 d-flex justify-content-center align-items-center"
-  style="height: 100vh"
->
-  <div
-    class="col-md-4 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column"
-  >
-    <p class="fs-2">Crear Curso</p>
-    <input
-      type="text"
-      class="form-control mb-3"
-      placeholder="Nombre"
-      aria-label="Nombre"
-      id="nombre"
-    />
-    <input
-      type="text"
-      class="form-control mb-3"
-      placeholder="Ciclo"
-      aria-label="Ciclo"
-      id="ciclo"
-    />
-    <select class="form-select mb-3" aria-label="Default select example" id="docente">
-        <option selected>Seleccionar docente</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
-      </select>
-    <button
-      type="button"
-      class="btn btn-primary"
-      style="width: 210px"
-      id="async"
-    >
-      Crear
-    </button>
+  cuerpo%}
+  <div class="col-md-12 d-flex justify-content-center align-items-center" style="height: 100vh">
+    <div class="col-md-4 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column">
+      <p class="fs-2">Crear Curso</p>
+      <input type="text" class="form-control mb-3" placeholder="Nombre" aria-label="Nombre" id="nombre" />
+      <input type="text" class="form-control mb-3" placeholder="Ciclo" aria-label="Ciclo" id="ciclo" />
+      <input type="number" class="form-control mb-3" placeholder="Duración" aria-label="Duración" id="duracion" />
+  
+      <button type="button" class="btn btn-primary" style="width: 210px" id="async">
+        Crear
+      </button>
+    </div>
   </div>
-</div>
-<script>
-  var boton = document.getElementById("async");
-
-    boton.addEventListener('click', function(){
-
-        var nombre = document.getElementById("nombre").value;
-        var ciclo = document.getElementById("ciclo").value;
-        var docente = document.getElementById("docente").value;
-
-        var formData = new FormData();
-        var jsonData = {nombre : nombre, ciclo : ciclo, docente:docente};
-
-
-        fetch('/registrar_curso', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(jsonData)
-        })
-
+  <script>
+    var boton = document.getElementById("async");
+  
+    boton.addEventListener('click', function () {
+  
+      var nombre = document.getElementById("nombre").value;
+      var ciclo = document.getElementById("ciclo").value;
+      var duracion = document.getElementById("duracion").value;
+  
+      var formData = new FormData();
+      var jsonData = { nombre: nombre, ciclo: ciclo, duracion: duracion };
+  
+  
+      fetch('/curso/crear', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsonData)
+      })
+  
         .then(
-            response => response.json()
+          response => response.json()
         )
-
+  
         .then(
-            data => {
-                console.log(data);
-                if(data.respuesta == "Exitosa"){
-                    location.replace("/");
-                }
-                else{
-                    //Debes poner una notificación y mostrar el mensaje
-                }
+          data => {
+            console.log(data);
+            if (data.respuesta == "Exitosa") {
+              alert("Curso registrado de manera exitosa");
+              location.replace("/");
             }
+            else {
+              //Debes poner una notificación y mostrar el mensaje
+            }
+          }
         )
-
-        .catch(error =>{
-            //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
+  
+        .catch(error => {
+          //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
         })
     })
-</script>
+  </script>
   {%endblock%}
-</div>
+  </div>

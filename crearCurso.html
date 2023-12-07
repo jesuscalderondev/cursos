@@ -1,0 +1,59 @@
+{% extends 'template.html'%} {%block titulo%} Crear Curso {%endblock%} {%block
+cuerpo%}
+<div class="col-md-12 d-flex justify-content-center align-items-center" style="height: 100vh">
+  <div class="col-md-4 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column">
+    <p class="fs-2">Crear Curso</p>
+    <input type="text" class="form-control mb-3" placeholder="Nombre" aria-label="Nombre" id="nombre" />
+    <input type="text" class="form-control mb-3" placeholder="Ciclo" aria-label="Ciclo" id="ciclo" />
+    <input type="number" class="form-control mb-3" placeholder="Duración" aria-label="Duración" id="duracion" />
+
+    <button type="button" class="btn btn-primary" style="width: 210px" id="async">
+      Crear
+    </button>
+  </div>
+</div>
+<script>
+  var boton = document.getElementById("async");
+
+  boton.addEventListener('click', function () {
+
+    var nombre = document.getElementById("nombre").value;
+    var ciclo = document.getElementById("ciclo").value;
+    var duracion = document.getElementById("duracion").value;
+
+    var formData = new FormData();
+    var jsonData = { nombre: nombre, ciclo: ciclo, duracion: duracion };
+
+
+    fetch('/curso/crear', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(jsonData)
+    })
+
+      .then(
+        response => response.json()
+      )
+
+      .then(
+        data => {
+          console.log(data);
+          if (data.respuesta == "Exitosa") {
+            alert("Curso registrado de manera exitosa");
+            location.replace("/");
+          }
+          else {
+            //Debes poner una notificación y mostrar el mensaje
+          }
+        }
+      )
+
+      .catch(error => {
+        //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
+      })
+  })
+</script>
+{%endblock%}
+</div>

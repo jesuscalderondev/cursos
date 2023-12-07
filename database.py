@@ -46,7 +46,7 @@ class Docente(Base):
         self.nombres = nombres
         self.apellido_paterno = apellido_paterno
         self.apellido_materno = apellido_materno
-        self.fecha_nacimiento = fecha_nacimiento
+        self.fecha_nacimiento = datetime.strptime(fecha_nacimiento, "%Y-%m-%d").date()
         self.usuario = usuario
 
 class Administrador(Base):
@@ -62,3 +62,32 @@ class Administrador(Base):
         self.apellido_paterno = apellido_paterno
         self.apellido_materno = apellido_materno
         self.usuario = usuario
+        
+class Curso(Base):
+    __tablename__ = 'cursos'
+    codigo = Column(Integer, primary_key=True)
+    duracion = Column(Integer, nullable=False)
+    ciclo = Column(String(122), nullable=False)
+    nombre = Column(String(122), nullable=False, unique=True)
+    
+    def __init__(self, duracion, ciclo, nombre):
+        self.nombre = nombre
+        self.ciclo = ciclo
+        self.duracion = duracion
+        
+class Grupo(Base):
+    __tablename__ = 'grupos'
+    codigo = Column(String, primary_key=True, autoincrement=False)
+    fecha_inicial = Column(Date, nullable=False)
+    fecha_final = Column(Date, nullable=False)
+    hora_inicial = Column(Time, nullable = False)
+    hora_final = Column(Time, nullable = False)
+    docente = Column(Integer, ForeignKey("docentes.id"), nullable=False)
+    
+    def __init__(self, fecha_inicial, fecha_final, hora_inicial, hora_final, docente, codigo):
+        self.codigo = codigo
+        self.hora_inicial = hora_inicial
+        self.hora_final = hora_final
+        self.fecha_inicial = fecha_inicial
+        self.fecha_final = fecha_final
+        self.docente = docente
