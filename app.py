@@ -5,6 +5,8 @@ from funciones import *
 
 app = Flask("Servidor")
 
+app.config["SECRET_KEY"] = "KJSDKLDSJBNCDSBS"
+
 
 @app.route('/')
 def index():
@@ -22,24 +24,25 @@ def index():
 @app.route('/inicio_sesion', methods=['POST'])
 def iniciarSesion():
     operacion = "Fallida"
-    llave = "null"
-    mensaje = "Sin sesión"
     if validarSesion() != True:
         credenciales = request.get_json()
+        print(credenciales)
+
         clave = credenciales["clave"]
         email = credenciales["email"]
+        if verificar_caracteres_especiales(nombre_usuario) == True and verificar_caracteres_especiales(clave) == True:
+            usuario = session.query(Usuario).filter(
+                Usuario.email == email).first()
 
-        usuario = session.query(Usuario).filter(
-            Usuario.email == email).first()
-
-        if usuario != None and validarClave(usuario.clave, clave):
-            nube['llave_ingreso'] = usuario.ID
-            llave = llaveAcceso()
-            operacion = "Exitosa"
+            if usuario != None and validarClave(usuario.clave, clave):
+                nube['llave_ingreso'] = usuario.ID
+                operacion = "Exitosa"
+            else:
+                mensaje = 'Usuario o clave incorrect@'
         else:
-            mensaje = 'Usuario o clave incorrect@'
+            mensaje = "Caracteres especiales detectados, por favor intentar sin insertar caracteres como '@,/.#'"
 
-    return jsonify(respuesta=operacion, mensaje=mensaje, llave=llave)
+    return jsonify(respuesta=operacion, mensaje=mensaje)
 
 
 # ------------------------------------  Cursos ------------------------------------
@@ -146,4 +149,5 @@ app.register_blueprint(apis)
 app.register_blueprint(grupos)
 
 if __name__ == '__main__':
+    Base.metadata.create_all(engine)
     app.run(debug=True)

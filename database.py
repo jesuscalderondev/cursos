@@ -19,7 +19,7 @@ session = Session()
 Base = declarative_base()
 
 class Usuario(Base):
-    __tablename__ = 'usarios'
+    __tablename__ = 'usuarios'
     id = Column(Integer, primary_key=True)
     email = Column(String(255), nullable=False, unique=True)
     clave = Column(String(12), nullable=False)
@@ -31,6 +31,7 @@ class Usuario(Base):
         self.clave = clave
         self.rol = rol
         self.estado = 1
+    
         
 class Docente(Base):
     __tablename__ = 'docentes'
@@ -48,7 +49,6 @@ class Docente(Base):
         self.fecha_nacimiento = fecha_nacimiento
         self.usuario = usuario
 
-
 class Administrador(Base):
     __tablename__ = 'administradores'
     id = Column(Integer, primary_key=True)
@@ -57,7 +57,7 @@ class Administrador(Base):
     apellido_materno = Column(String(225), nullable=False)
     usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
     
-    def __init__(self, nombres, apellido_paterno, apellido_materno, fecha_nacimiento, usuario):
+    def __init__(self, nombres, apellido_paterno, apellido_materno, usuario):
         self.nombres = nombres
         self.apellido_paterno = apellido_paterno
         self.apellido_materno = apellido_materno
