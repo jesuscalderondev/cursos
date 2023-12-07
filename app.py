@@ -8,42 +8,15 @@ app = Flask("Servidor")
 
 @app.route('/')
 def index():
+    if validarSesion():
+        docente = session.query(Docente).filter(
+            Docente.usuario == llaveAcceso()).first()
+        if docente != None:
+            administrador = session.query(
+                Administrador.usuario == llaveAcceso()).first()
+            return render_template('administrador.html', administrador=administrador)
+        return render_template('docente.html', docente)
     return render_template('index.html')
-
-
-@app.route('/docentes/listar')
-def docentesListar():
-    return render_template('listarDocentes.html')
-
-
-@app.route('/docente/crear')
-def docenteCrear():
-    return render_template('crearDocente.html')
-
-
-@app.route('/estudiantes/listar')
-def estudiantesCrear():
-    return render_template('listarEstudiantes.html')
-
-
-@app.route('/cursos/listar')
-def cursosCrear():
-    return render_template('listarCursos.html')
-
-
-@app.route('/curso/crear')
-def cursoCrear():
-    return render_template('crearCurso.html')
-
-
-@app.route('/grupos/listar')
-def gruposCrear():
-    return render_template('listarGrupos.html')
-
-
-@app.route('/grupo/crear')
-def grupoCrear():
-    return render_template('crearGrupo.html')
 
 
 # Cursos
