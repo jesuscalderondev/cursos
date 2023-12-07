@@ -72,3 +72,10 @@ def crearAdministrador(form):
     admin = Administrador(nombres, apellidoPaterno, apellidoMaterno, usuario.id)
     session.add(admin)
     session.commit()
+    
+    
+def obtenerRol(usuario:object):
+    if usuario.rol == "Administrador":
+        return session.query(Administrador).filter(Administrador.usuario).first()
+    else:
+        return session.query(Docente).filter(Docente.usuario).first()

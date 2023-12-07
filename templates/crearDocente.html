@@ -1,57 +1,24 @@
-{% extends 'template.html'%} {%block titulo%} Crear Docente {%endblock%} {%block
-    cuerpo%}
-    <div
-      class="col-md-12 d-flex justify-content-center align-items-center"
-      style="height: 100vh"
-    >
-      <div
-        class="col-md-6 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column"
-      >
-        <p class="fs-2">Crear Docente</p>
-        <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
-            <input
-                type="text"
-                class="form-control" style="margin-right:5px"
-                placeholder="Nombres"
-                aria-label="Nombres"
-            />
-            <input
-                type="date"
-                class="form-control" style="margin-left:5px"
-                placeholder="Fecha de nacimiento"
-                aria-label="Fecha de nacimiento"
-            />
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
-            <input
-                type="text"
-                class="form-control" style="margin-right:5px"
-                placeholder="Apellido Paterno"
-                aria-label="Apellido Paterno"
-            />
-            <input
-              type="text"
-              class="form-control" style="margin-left:5px"
-              placeholder="Apellido Materno"
-              aria-label="Apellido Materno"
-            />
-        </div>
-        <input
-          type="text"
-          class="form-control mb-3"
-          placeholder="Correo Electronico"
-          aria-label="Correo Electronico"
-        />
-        <button
-          type="button"
-          class="btn btn-primary"
-          style="width: 210px"
-          id="async"
-        >
-          Crear
-        </button>
-      </div>
+{% extends 'template.html'%}
+{%block titulo%}Crear Docente{%endblock%}
+{%block cuerpo%}
+<div class="col-md-12 d-flex justify-content-center align-items-center" style="height: 100vh">
+  <div class="col-md-6 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column">
+    <p class="fs-2">Crear Docente</p>
+    <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
+      <input type="text" class="form-control" style="margin-right:5px" placeholder="Nombres" aria-label="Nombres" />
+      <input type="date" class="form-control" style="margin-left:5px" placeholder="Fecha de nacimiento"
+        aria-label="Fecha de nacimiento" />
     </div>
-      {%endblock%}
+    <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
+      <input type="text" class="form-control" style="margin-right:5px" placeholder="Apellido Paterno"
+        aria-label="Apellido Paterno" />
+      <input type="text" class="form-control" style="margin-left:5px" placeholder="Apellido Materno"
+        aria-label="Apellido Materno" />
     </div>
-    
+    <input type="text" class="form-control mb-3" placeholder="Correo Electronico" aria-label="Correo Electronico" />
+    <button type="button" class="btn btn-primary" style="width: 210px" id="async">
+      Crear
+    </button>
+  </div>
+</div>
+{%endblock%}

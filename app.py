@@ -44,7 +44,7 @@ def iniciarSesion():
 
 
 
-@app.route('/registrarAdministrador', methods = ['POST', 'GET'])
+@app.route('/registrar_dministrador', methods = ['POST', 'GET'])
 def registrarAdministrador():
     print(request.method)
     if request.method == 'POST':
@@ -54,6 +54,25 @@ def registrarAdministrador():
         return "Exitosamente creado el administrador"
     else:
         return render_template("registrarAdministrador.html")
+
+@app.route('/registrar_docente', methods=['POST', 'GET'])
+def regsitrarDocente():
+    if validarSesion():
+        if request.method == 'POST':
+            formulario = request.get_json()
+            try:
+                crearDocente(formulario)
+                operacion = "Exitosa"
+                mesnaje = "Docente registrado de manera exitosa"
+            except:
+                operacion = "Fallida"
+                mensaje = "El email ingresado ya está registrado en la base de datos"
+            
+            return jsonify(respuesta = operacion, mensaje = mensaje)
+        else:
+            rol = session.get(Usuario, llaveAcceso())
+            return render_template("crearDocente.html", rol = rol, usuario = obtenerRol(rol))
+    return redirect('/')
 
 """ 
 @app.route('/subir_estudiantes', methods = ['POST'])
