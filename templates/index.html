@@ -26,14 +26,16 @@
             <input
               type="text"
               class="form-control mb-3"
-              placeholder="Nombre de usuario"
-              aria-label="Nombre de usuario"
+              placeholder="Email"
+              aria-label="Email"
+              id="email"
             />
             <input
               type="password"
               class="form-control mb-3"
               placeholder="Contraseña"
               aria-label="Contraseña"
+              id="clave"
             /><button
               type="button"
               class="btn btn-primary"
@@ -51,8 +53,10 @@
   <script>
     $(document).ready(function () {
       $("#async").click(function () {
-        console.log("hey");
-        $.get("url", function () {
+        email = document.getElementById("email").value;
+        clave = document.getElementById("clave").value;
+        console.log("hey: " + email + " " + clave);
+        $.post("/inicio_sesion", { email, clave }, function () {
           alert("success");
         })
           .done(function () {
