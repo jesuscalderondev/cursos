@@ -1,0 +1,38 @@
+{%extends 'template.html'%}
+
+{%block titulo%}RegistrarAdmin{%endblock%}
+
+{%block cuerpo%}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col d-flex justify-content-center align-items-center" style="height: 100vh">
+            <form action="/registrarAdministrador" method="post" dataType="application/json"
+                class="col-md-4 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column">
+                <p class="fs-2">Registro de Administradores</p>
+
+                <div class="mb-2">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+                </div>
+
+                <div class="mb-2">
+                    <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Juan Perez">
+                </div>
+
+                <div class="mb-2">
+                    <input type="text" class="form-control" id="apellidoPaterno" name="apellidoPaterno"
+                    placeholder="Carbalo">
+                </div>
+
+                <div class="mb-2">
+                    <input type="text" class="form-control" id="apellidoMaterno" name="apellidoMaterno"
+                    placeholder="Pedrozo">
+                </div>
+
+                
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{%endblock%}

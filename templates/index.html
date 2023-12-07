@@ -1,5 +1,84 @@
-{% extends 'template.html'%}
-{%block titulo%}Inicio{%endblock%}
-{%block cuerpo%}
+<!DOCTYPE html>
+<html lang="en">
 
-{%endblock%}
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <title>{%block titulo%}{%endblock%}</title>
+</head>
+
+<body class="bg-dark">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 d-flex justify-content-center align-items-center" style="height: 100vh">
+                <div
+                    class="col-md-4 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column">
+                    <p class="fs-2">Iniciar Sesion</p>
+                    <input type="text" class="form-control mb-3" placeholder="Email" aria-label="Email" id="email" />
+                    <input type="password" class="form-control mb-3" placeholder="Contraseña" aria-label="Contraseña"
+                        id="clave" /><button type="button" class="btn btn-primary" style="width: 210px" id="async">
+                        Iniciar Sesion
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+      
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+    var boton = document.getElementById("async");
+
+    boton.addEventListener('click', function(){
+
+        var email = document.getElementById("email").value;
+        var clave = document.getElementById("clave").value;
+
+        var formData = new FormData();
+        var jsonData = {email : email, clave : clave};
+
+
+        fetch('/inicio_sesion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+
+        .then(
+            response => response.json()
+        )
+
+        .then(
+            data => {
+                console.log(data);
+                if(data.respuesta == "Exitosa"){
+                    alert("Acceso exitoso, tu llave cifrada es " + data.llave);
+                    location.replace("/inicio/"+data.llave);
+                }
+                else{
+                    //Debes poner una notificación y mostrar el mensaje
+                }
+            }
+        )
+
+        .catch(error =>{
+            //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
+        })
+    })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+    integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+    crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/c31f955b45.js" crossorigin="anonymous"></script>
+
+</html>

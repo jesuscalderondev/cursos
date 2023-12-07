@@ -4,40 +4,79 @@ from database import *
 from funciones import *
 
 app = Flask("Servidor")
+app.config["SECRET_KEY"] = "KJSDKLDSJBNCDSBS"
 
 @app.route('/')
 def index():
     if validarSesion():
         docente = session.query(Docente).filter(Docente.usuario == llaveAcceso()).first()
-        if docente != None:
+        if docente == None:
             administrador = session.query(Administrador.usuario == llaveAcceso()).first()
-            return render_template('administrador.html', administrador = administrador)
+            if administrador != None:
+                return render_template('administrador.html', administrador = administrador)
         return render_template('docente.html', docente)
     return render_template('index.html')
 
 @app.route('/inicio_sesion', methods = ['POST'])
 def iniciarSesion():
     operacion = "Fallida"
+    llave = 1233
+    mensaje = "Sin mensaje"
     if validarSesion() != True:
         credenciales = request.get_json()
+        print(credenciales)
+        
         clave = credenciales["clave"]
         email = credenciales["email"]
-        if verificar_caracteres_especiales(nombre_usuario) == True and verificar_caracteres_especiales(clave) == True:
-            usuario = session.query(Usuario).filter(
-                Usuario.email == email).first()
-            
-            if usuario != None and validarClave(usuario.clave, clave):
-                nube['llave_ingreso'] = usuario.ID
-                operacion = "Exitosa"
-            else:
-                mensaje = 'Usuario o clave incorrect@'
+        usuario = session.query(Usuario).filter(
+            Usuario.email == email).first()
+        
+        print(validarClave(usuario.clave, clave))
+        
+        if usuario != None and validarClave(usuario.clave, clave):
+            nube['llave_ingreso'] = usuario.id
+            llave = llaveAcceso()
+            operacion = "Exitosa"
         else:
-            mensaje = "Caracteres especiales detectados, por favor intentar sin insertar caracteres como '@,/.#'"
+            mensaje = 'Usuario o clave incorrect@'
             
-    return jsonify(respuesta = operacion, mensaje = mensaje)
+    return jsonify(respuesta = operacion, mensaje = mensaje, llave = llave)
 
 
+@app.route('/inicio/<string:llave>', methods=['GET'])
+def direccionarDashboard(llave):
+    respuesta = redirect("/")
+    if validarSesion():
+        usuario = session.get(Usuario, llave)
+        if usuario.rol == 'Docente':
+            respuesta = render_template("docente.html")
+        else:
+            respuesta = render_template("administrador.html")
+        
+    return respuesta
 
+
+@app.route('/registrarAdministrador', methods = ['POST', 'GET'])
+def registrarAdministrador():
+    print(request.method)
+    if request.method == 'POST':
+        formulario = request.form
+        print(formulario)
+        crearAdministrador(formulario)
+        return "Exitosamente creado el administrador"
+    else:
+        return render_template("registrarAdministrador.html")
+
+""" 
+@app.route('/subir_estudiantes', methods = ['POST'])
+def subirEstudiantes():
+    if validarSesion():
+        archivo = request.files["archivo"]
+        
+        if ".xlsx" in archivo.filename:
+            archivo.save("/static/listaEstudiantes.xlsx")
+
+    return  """
         
 
 #------------------------------------  Cursos ------------------------------------
@@ -88,4 +127,5 @@ def filtrarDocente():
 app.register_blueprint(apis)
 
 if __name__ == '__main__':
+    Base.metadata.create_all(engine)
     app.run(debug=True)
