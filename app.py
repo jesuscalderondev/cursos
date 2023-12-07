@@ -11,16 +11,17 @@ def index():
     if validarSesion():
         docente = session.query(Docente).filter(Docente.usuario == llaveAcceso()).first()
         if docente == None:
-            administrador = session.query(Administrador.usuario == llaveAcceso()).first()
+            administrador = session.query(Administrador).filter(Administrador.usuario == llaveAcceso()).first()
             if administrador != None:
-                return render_template('administrador.html', administrador = administrador)
-        return render_template('docente.html', docente)
+                rol = session.get(Usuario, administrador.usuario)
+                return render_template('administrador.html', usuario = administrador, rol = rol)
+            rol = session.get(Usuario, docente.usuario)
+        return render_template('docente.html', usuario = docente)
     return render_template('index.html')
 
 @app.route('/inicio_sesion', methods = ['POST'])
 def iniciarSesion():
     operacion = "Fallida"
-    llave = 1233
     mensaje = "Sin mensaje"
     if validarSesion() != True:
         credenciales = request.get_json()
@@ -35,25 +36,12 @@ def iniciarSesion():
         
         if usuario != None and validarClave(usuario.clave, clave):
             nube['llave_ingreso'] = usuario.id
-            llave = llaveAcceso()
             operacion = "Exitosa"
         else:
             mensaje = 'Usuario o clave incorrect@'
             
-    return jsonify(respuesta = operacion, mensaje = mensaje, llave = llave)
+    return jsonify(respuesta = operacion, mensaje = mensaje)
 
-
-@app.route('/inicio/<string:llave>', methods=['GET'])
-def direccionarDashboard(llave):
-    respuesta = redirect("/")
-    if validarSesion():
-        usuario = session.get(Usuario, llave)
-        if usuario.rol == 'Docente':
-            respuesta = render_template("docente.html")
-        else:
-            respuesta = render_template("administrador.html")
-        
-    return respuesta
 
 
 @app.route('/registrarAdministrador', methods = ['POST', 'GET'])
@@ -123,6 +111,7 @@ def filtrarDocente():
         
         respuesta = json_docentes
     return respuesta
+
 
 app.register_blueprint(apis)
 

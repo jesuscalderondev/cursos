@@ -58,8 +58,7 @@
             data => {
                 console.log(data);
                 if(data.respuesta == "Exitosa"){
-                    alert("Acceso exitoso, tu llave cifrada es " + data.llave);
-                    location.replace("/inicio/"+data.llave);
+                    location.replace("/");
                 }
                 else{
                     //Debes poner una notificación y mostrar el mensaje
