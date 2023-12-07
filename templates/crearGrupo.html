@@ -1,0 +1,59 @@
+{% extends 'template.html'%} {%block titulo%} Crear Docente {%endblock%} {%block
+    cuerpo%}
+    <div
+      class="col-md-12 d-flex justify-content-center align-items-center"
+      style="height: 100vh"
+    >
+      <div
+        class="col-md-6 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column"
+      >
+        <p class="fs-2">Crear Grupo</p>
+        <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
+            <div style="width:100%; margin-right:5px">
+              <label for="horaInicio" class="form-label">Hora de inicio</label>
+              <input
+                  id="horaInicio"
+                  type="time"
+                  class="form-control"
+                  placeholder="Hora inicio"
+                  aria-label="Hora inicio"
+              />
+            </div>
+            <div style="width:100%; margin-left:5px">
+              <label for="horaFinalizacion" class="form-label">Hora de inicio</label>
+              <input
+                  id="horaFinalizacion"
+                  type="time"
+                  class="form-control" 
+                  placeholder="Hora inicio"
+                  aria-label="Hora inicio"
+              />
+            </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
+            <input
+                type="text"
+                class="form-control" style="margin-right:5px"
+                placeholder="Codigo"
+                aria-label="Codigo"
+            />
+            <input
+              type="text"
+              class="form-control" style="margin-left:5px"
+              placeholder="Apellido Materno"
+              aria-label="Apellido Materno"
+            />
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary"
+          style="width: 210px"
+          id="async"
+        >
+          Crear
+        </button>
+      </div>
+    </div>
+      {%endblock%}
+    </div>
+    
