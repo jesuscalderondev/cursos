@@ -7,14 +7,14 @@
 
 Al hacer la petición al serviodor se obtienen dos posibles estados, si no existe credencial dentro del servidor se retorna un json de la siguiente manera:
 
-```json
+```js
 json = {
     'respuesta' : 'Acceso denegado'
 }
 ```
 Por el contrario si se tiene la credencial se obtiene un json de este estilo:
 
-```json
+```js
 
 json = {
     'respuesta' : 'Acceso concedido',
@@ -46,7 +46,7 @@ La función comienza verificando si el usuario ya está autenticado. Si no lo es
 
 Vista de json
 
-```json
+```js
 
 json = {
     'respuesta' : 'Exitosa',
