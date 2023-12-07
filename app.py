@@ -4,7 +4,6 @@ from database import *
 from funciones import *
 
 app = Flask("Servidor")
-
 app.config["SECRET_KEY"] = "KJSDKLDSJBNCDSBS"
 
 
@@ -13,36 +12,83 @@ def index():
     if validarSesion():
         docente = session.query(Docente).filter(
             Docente.usuario == llaveAcceso()).first()
-        if docente != None:
-            administrador = session.query(
+        if docente == None:
+            administrador = session.query(Administrador).filter(
                 Administrador.usuario == llaveAcceso()).first()
-            return render_template('administrador.html', administrador=administrador)
-        return render_template('docente.html', docente)
+            if administrador != None:
+                rol = session.get(Usuario, administrador.usuario)
+                return render_template('administrador.html', usuario=administrador, rol=rol)
+            rol = session.get(Usuario, docente.usuario)
+        return render_template('docente.html', usuario=docente, rol=rol)
     return render_template('index.html')
 
 
 @app.route('/inicio_sesion', methods=['POST'])
 def iniciarSesion():
     operacion = "Fallida"
+    mensaje = "Sin mensaje"
     if validarSesion() != True:
         credenciales = request.get_json()
         print(credenciales)
 
         clave = credenciales["clave"]
         email = credenciales["email"]
-        if verificar_caracteres_especiales(nombre_usuario) == True and verificar_caracteres_especiales(clave) == True:
-            usuario = session.query(Usuario).filter(
-                Usuario.email == email).first()
+        usuario = session.query(Usuario).filter(
+            Usuario.email == email).first()
 
-            if usuario != None and validarClave(usuario.clave, clave):
-                nube['llave_ingreso'] = usuario.ID
-                operacion = "Exitosa"
-            else:
-                mensaje = 'Usuario o clave incorrect@'
+        print(validarClave(usuario.clave, clave))
+
+        if usuario != None and validarClave(usuario.clave, clave):
+            nube['llave_ingreso'] = usuario.id
+            operacion = "Exitosa"
         else:
-            mensaje = "Caracteres especiales detectados, por favor intentar sin insertar caracteres como '@,/.#'"
+            mensaje = 'Usuario o clave incorrect@'
 
     return jsonify(respuesta=operacion, mensaje=mensaje)
+
+
+@app.route('/registrar_dministrador', methods=['POST', 'GET'])
+def registrarAdministrador():
+    print(request.method)
+    if request.method == 'POST':
+        formulario = request.form
+        print(formulario)
+        crearAdministrador(formulario)
+        return "Exitosamente creado el administrador"
+    else:
+        return render_template("registrarAdministrador.html")
+
+
+@app.route('/registrar_docente', methods=['POST', 'GET'])
+def regsitrarDocente():
+    if validarSesion():
+        if request.method == 'POST':
+            formulario = request.get_json()
+            try:
+                crearDocente(formulario)
+                operacion = "Exitosa"
+                mesnaje = "Docente registrado de manera exitosa"
+            except:
+                operacion = "Fallida"
+                mensaje = "El email ingresado ya está registrado en la base de datos"
+
+            return jsonify(respuesta=operacion, mensaje=mensaje)
+        else:
+            rol = session.get(Usuario, llaveAcceso())
+            return render_template("crearDocente.html", rol=rol, usuario=obtenerRol(rol))
+    return redirect('/')
+
+
+""" 
+@app.route('/subir_estudiantes', methods = ['POST'])
+def subirEstudiantes():
+    if validarSesion():
+        archivo = request.files["archivo"]
+        
+        if ".xlsx" in archivo.filename:
+            archivo.save("/static/listaEstudiantes.xlsx")
+
+    return  """
 
 
 # ------------------------------------  Cursos ------------------------------------
@@ -52,48 +98,8 @@ cursos = Blueprint("cursos", __name__, url_prefix='/cursos')
 @cursos.route('/lista')
 def listarCursos():
     respuesta = redirect('/')
-    # if validarSesion():
-    respuesta = render_template('listarCursos.html')
-    return respuesta
-
-
-@cursos.route('/crear')
-def crearCursos():
-    respuesta = redirect('/')
-    # if validarSesion():
-    respuesta = render_template('crearCurso.html')
-    return respuesta
-
-
-# ------------------------------------  Grupos ------------------------------------
-grupos = Blueprint("Grupos", __name__, url_prefix='/grupos')
-
-
-@grupos.route('/lista')
-def listarGrupos():
-    respuesta = redirect('/')
-    # if validarSesion():
-    respuesta = render_template('listarGrupos.html')
-    return respuesta
-
-
-@grupos.route('/crear')
-def crearGrupos():
-    respuesta = redirect('/')
-    # if validarSesion():
-    respuesta = render_template('crearGrupo.html')
-    return respuesta
-
-
-# ------------------------------------  Estudiantes ------------------------------------
-estudiantes = Blueprint("Estudiantes", __name__, url_prefix='/estudiantes')
-
-
-@estudiantes.route('/lista')
-def listarEstudiantes():
-    respuesta = redirect('/')
     if validarSesion():
-        respuesta = render_template('listarEstudiantes.html')
+        respuesta = render_template('cursos.html')
     return respuesta
 
 
@@ -105,15 +111,7 @@ docentes = Blueprint("docentes", __name__, url_prefix='/docentes')
 def listarDocentes():
     respuesta = redirect('/')
     if validarSesion():
-        respuesta = render_template('listarDocentes.html')
-    return respuesta
-
-
-@docentes.route('/crear')
-def listarDocentes():
-    respuesta = redirect('/')
-    if validarSesion():
-        respuesta = render_template('crearDocente.html')
+        respuesta = render_template('docentes.html')
     return respuesta
 
 
@@ -146,7 +144,6 @@ def filtrarDocente():
 
 
 app.register_blueprint(apis)
-app.register_blueprint(grupos)
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
