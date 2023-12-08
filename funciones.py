@@ -1,4 +1,5 @@
 from flask import session as nube
+from flask import render_template
 import hashlib
 import base64
 from database import *
@@ -89,3 +90,8 @@ def obtenerRol(usuario:object):
         return session.query(Administrador).filter(Administrador.usuario).first()
     else:
         return session.query(Docente).filter(Docente.usuario).first()
+    
+    
+def renderizarTemplate(plantilla):
+    rol = session.get(Usuario, llaveAcceso())
+    return render_template(plantilla, rol = rol, usuario = obtenerRol(rol))

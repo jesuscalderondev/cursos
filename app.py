@@ -14,9 +14,9 @@ def index():
             administrador = session.query(Administrador).filter(Administrador.usuario == llaveAcceso()).first()
             if administrador != None:
                 rol = session.get(Usuario, administrador.usuario)
-                return render_template('administrador.html', usuario = administrador, rol = rol)
+                return renderizarTemplate('administrador.html')
             rol = session.get(Usuario, docente.usuario)
-        return render_template('docente.html', usuario = docente, rol = rol)
+        return renderizarTemplate('docente.html')
     return render_template('index.html')
 
 @app.route('/inicio_sesion', methods = ['POST'])
@@ -44,7 +44,7 @@ def iniciarSesion():
 
 
 
-@app.route('/registrar_dministrador', methods = ['POST', 'GET'])
+@app.route('/registrar_administrador', methods = ['POST', 'GET'])
 def registrarAdministrador():
     print(request.method)
     if request.method == 'POST':
@@ -53,7 +53,7 @@ def registrarAdministrador():
         crearAdministrador(formulario)
         return "Exitosamente creado el administrador"
     else:
-        return render_template("registrarAdministrador.html")
+        return renderizarTemplate("registrarAdministrador.html")
 
 @app.route('/registrar_docente', methods=['POST', 'GET'])
 def regsitrarDocente():
@@ -71,7 +71,7 @@ def regsitrarDocente():
             return jsonify(respuesta = operacion, mensaje = mensaje)
         else:
             rol = session.get(Usuario, llaveAcceso())
-            return render_template("crearDocente.html", rol = rol, usuario = obtenerRol(rol))
+            return renderizarTemplate("crearDocente.html")
     return redirect('/')
 
 """ 
@@ -87,7 +87,7 @@ def subirEstudiantes():
         
 
 #------------------------------------  Cursos ------------------------------------
-cursos = Blueprint("cursos", __name__, url_prefix='/cursos')
+cursos = Blueprint("cursos", __name__, url_prefix='/curso')
 
 @cursos.route('/lista')
 def listarCursos():
@@ -110,10 +110,11 @@ def registrarCurso():
                 mensaje = "El curso no fue creado, debido a que este curso ya existe"
             return jsonify(respuesta = operacion, mensaje = mensaje)
         else:
-            return render_template("crearCurso.html")
+            return renderizarTemplate("crearCurso.html")
             
     return redirect("/")
 
+app.register_blueprint(cursos)
 #----------------------------------- Docentes ------------------------------------
 docentes = Blueprint("docentes", __name__, url_prefix='/docentes')
 
@@ -121,7 +122,7 @@ docentes = Blueprint("docentes", __name__, url_prefix='/docentes')
 def listarDocentes():
     respuesta = redirect('/')
     if validarSesion():
-        respuesta = render_template('docentes.html')
+        respuesta = renderizarTemplate('docentes.html')
     return respuesta
 
 #--------------------------------- API'S -------------------------------------

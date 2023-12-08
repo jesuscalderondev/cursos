@@ -68,7 +68,7 @@ class Curso(Base):
     codigo = Column(Integer, primary_key=True)
     duracion = Column(Integer, nullable=False)
     ciclo = Column(String(122), nullable=False)
-    nombre = Column(String(122), nullable=False, unique=True)
+    nombre = Column(String(122), nullable=False)
     
     def __init__(self, duracion, ciclo, nombre):
         self.nombre = nombre
