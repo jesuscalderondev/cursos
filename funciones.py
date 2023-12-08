@@ -125,3 +125,7 @@ def renderizarLista(plantilla:str, lista:list):
 def renderizarJson(plantilla:str, json:dict):
     rol = session.get(Usuario, llaveAcceso())
     return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), json = json)
+
+def renderizarEdit(plantilla, objeto):
+    rol = session.get(Usuario, llaveAcceso())
+    return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), registro = objeto)

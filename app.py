@@ -137,17 +137,17 @@ apis = Blueprint("apis", __name__, url_prefix='/api')
 
 @apis.route('/filtrar_docente', methods = ['POST', 'GET'])
 def filtrarDocente():
-    if request.method == 'GET':
-        respuesta = jsonify(respuesta = "Acceso denegado")
+    respuesta = "Sin accceso"
     if validarSesion() and request.method == 'POST':
         peticion = request.get_json()
         campo = peticion['filtrado']
         consulta = session.query(Docente).filter(or_(Docente.nombres.like(f'%{campo}%'), Docente.apellido_paterno).like(f'%{campo}%'), Docente.apellido_materno.like(f'%{campo}%')).all()
         
-        json_docentes = {'respuesta' : 'Acceso concedido', 'docentes' : {}}
+        json_docentes = {}
+        
         for docente in consulta:
             json_docentes[f'{docente.id}'] = {
-                'nombres' : docente.nombre,
+                'nombres' : docente.nombres,
                 'paterno' : docente.apellido_paterno,
                 'materno' : docente.apellido_materno,
                 'email' : docente.email,
@@ -155,6 +155,26 @@ def filtrarDocente():
             }
         
         respuesta = json_docentes
+    return respuesta
+
+@apis.route('/filtrar_curso')
+def filtrarCurso():
+    if validarSesion():
+        formulario = request.get_json()
+        parametro = formulario["filtro"]
+        
+        cursos_filtrados = session.query(Curso).filter(or_(Curso.nombre.like(f'%{parametro}%'), Curso.duracion.like(f'%{parametro}%'), Curso.ciclo.like(f'%{parametro}%'))).all()
+        
+        json_cursos = {}
+        
+        for i in cursos_filtrados:
+            json_cursos[f'{i.id}'] = {
+                'nombre' : i.nombre,
+                'ciclo' : i.ciclo,
+                'duracion' : i.duracion
+            }
+        
+        respuesta = json_cursos
     return respuesta
 
 @apis.route('/filtrar_grupo', methods=['POST'])
@@ -233,6 +253,29 @@ def listarGrupos():
         return renderizarLista("listarGrupos.html", lista = json)
     return redirect("/")
 
+@grupos.route('/eliminar/<string:codigo>', methods = ['GET'])
+def eliminarGrupo(codigo):
+    mensaje = "Sin acceso"
+    if validarSesion():
+        try:
+            grupo = session.get(Grupo, codigo)
+            session.delete(grupo)
+            session.commit()
+            mensaje = "El grupo fue eliminado"
+        except:
+            mensaje = "El grupo no existe"
+    return jsonify(mensaje = mensaje)
+
+@grupos.route('/editar/<string:codigo>', methods = ['GET'])
+def editarGrupo(codigo):
+    respuesta = redirect("/")
+    if validarSesion():
+        try:
+            grupo = session.get(Grupo, codigo)
+            renderizarEdit("editarGrupo", registro = grupo)
+        except:
+            mensaje = "El grupo no existe"
+    return jsonify(mensaje = mensaje)
 
 
 app.register_blueprint(grupos)
