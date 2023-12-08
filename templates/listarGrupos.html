@@ -1,71 +1,112 @@
-{% extends 'template.html'%} {%block titulo%} Docentes {%endblock%} {%block
+{% extends 'template.html'%} {%block titulo%} Grupos {%endblock%} {%block
 cuerpo%}
-<div
-  style="height: 100vh"
-  class="d-flex justify-content-center align-items-center flex-column"
->
-  <div
-    style="width: 100%"
-    class="d-flex justify-content-between align-items-center"
-  >
-    <p class="fs-2">Listado De Docentes</p>
+
+<script>
+  function crear_grupo() {
+    location.replace("/grupo/crear");
+  }
+
+  function filtrar(filtrado) {
+
+    var jsonData = { filtro: filtrado.value };
+
+
+    fetch("/api/filtrar_grupo", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(jsonData)
+    }
+    )
+
+      .then(response => response.json())
+
+      .then(data => {
+        var tabla = document.querySelector("tbody");
+        var filas = tabla.getElementsByTagName("tr");
+
+        // Verifica si hay más de una fila (excluye la fila de encabezado)
+        for (var i = filas.length - 1; i >= 0; i--) {
+          tabla.deleteRow(i);
+        }
+
+        var llaves = Object.keys(data.json);
+        llaves.forEach(grupo => {
+
+          var fila = tabla.insertRow();
+          var celda1 = fila.insertCell();
+          var celda2 = fila.insertCell();
+          var celda3 = fila.insertCell();
+          var celda4 = fila.insertCell();
+          var celda5 = fila.insertCell();
+          var celda6 = fila.insertCell();
+          var celda7 = fila.insertCell();
+
+          celda1.innerHTML = data["json"][grupo].codigo;
+
+          celda2.innerHTML = data["json"][grupo].nombre;
+          celda3.innerHTML = data["json"][grupo].docente;
+          celda4.innerHTML = data["json"][grupo].curso;
+          celda5.innerHTML = data["json"][grupo].horario;
+          celda6.innerHTML = data["json"][grupo].dias;
+
+          celda7.innerHTML = "<a href='/grupo/ver/" + data["json"][grupo].codigo + "' class='iconos'><i class='fa-regular fa-eye' style='color: #08f'></i></a><a href='/grupo/editar/" + data["json"][grupo].codigo + "' class='iconos'><i class='fa-regular fa-pen-to-square' style='color: #08f'></i></a><a href='/grupo/eliminar/" + data["json"][grupo].codigo + "' class='iconos'><i class='fa-solid fa-trash' style='color: #08f'></i></a>"
+
+
+        });
+      })
+  }
+
+</script>
+
+
+
+<div style="height: 100vh" class="d-flex justify-content-center align-items-center flex-column">
+  <div style="width: 100%" class="d-flex justify-content-between align-items-center">
+    <p class="fs-2">Listado De Grupos</p>
     <div class="d-flex justify-content-center align-items-center">
-      <button
-        type="button"
-        class="btn btn-outline-primary"
-        style="width: 210px"
-      >
-        Crear Docente
+      <button type="button" onclick="crear_grupo()" class="btn btn-outline-primary" style="width: 210px">
+        Crear Grupo
       </button>
-      <input
-        type="text"
-        class="form-control mx-2"
-        aria-label="Text input with checkbox"
-      />
-      <button type="button" class="btn btn-primary">
-        <i class="fa-solid fa-magnifying-glass" style="color: white"></i>
-      </button>
+      <input id="filtrado" oninput="filtrar(this)" type="text" class="form-control mx-2" aria-label="Text input with checkbox" />
     </div>
   </div>
   <table class="table">
     <thead class="table-dark">
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
+        <th scope="col">Codigo</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Docente</th>
+        <th scope="col">Curso</th>
+        <th scope="col">Hoario</th>
+        <th scope="col">Dias</th>
         <th scope="col">Funcionalidades</th>
       </tr>
     </thead>
     <tbody>
+
+      {%for i in lista%}
       <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
+        <td scope="col">{{i["codigo"]}}</td>
+        <td scope="col">{{i["nombre"]}}</td>
+        <td scope="col">{{i["docente"]}}</td>
+        <td scope="col">{{i["curso"]}}</td>
+        <td scope="col">{{i["horario"]}}</td>
+        <td scope="col">{{i["dias"]}}</td>
         <td>
-          <i class="fa-regular fa-eye" style="color: #08f"></i>
-          <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
-          <i class="fa-solid fa-trash" style="color: #08f"></i>
+          <a href="/grupo/ver/{{i.codigo}}" class="iconos">
+            <i class="fa-regular fa-eye" style="color: #08f"></i>
+          </a>
+          <a href="/grupo/editar/{{i.codigo}}" class="iconos">
+            <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
+          </a>
+          <a href="/grupo/eliminar/{{i.codigo}}" class="iconos">
+            <i class="fa-solid fa-trash" style="color: #08f"></i>
+          </a>
         </td>
       </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>
-          <i class="fa-regular fa-eye" style="color: #08f"></i>
-          <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
-          <i class="fa-solid fa-trash" style="color: #08f"></i>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td colspan="2">Larry the Bird</td>
-        <td>
-          <i class="fa-regular fa-eye" style="color: #08f"></i>
-          <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
-          <i class="fa-solid fa-trash" style="color: #08f"></i>
-        </td>
-      </tr>
+      {%endfor%}
     </tbody>
   </table>
   {%endblock%}

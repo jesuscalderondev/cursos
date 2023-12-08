@@ -34,6 +34,7 @@ def verificar_caracteres_especiales(texto):
 
 def generarClave(nombre, apellido):
     clave = nombre.split(" ")[0] + apellido + f'{randint(0, 127)}'
+    clave = clave.lower()
     return clave
 
 def llaveAcceso():
@@ -84,6 +85,27 @@ def crearCurso(form):
         session.add(curso)
         session.commit()
     
+def crearGrupo(form):
+    with Session() as session:
+        nombre = form["nombre"]
+        codigo = form["codigo"]
+        fechaInicio = form["fechaInicio"]
+        fechaFinalizacion = form["fechaFinalizacion"]
+        horaInicio = form["horaInicio"]
+        horaFinalizacion = form["horaFinalizacion"]
+        docente = form["docente"]
+        curso = int(form["curso"])
+        
+        semana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
+        dias = ""
+        for i in semana:
+            if form[i] == True:
+                dias += f'{i}, '
+        
+        grupo = Grupo(fechaInicio, fechaFinalizacion, horaInicio, horaFinalizacion, docente, codigo, curso, dias, nombre)
+        session.add(grupo)
+        session.commit()
+    
     
 def obtenerRol(usuario:object):
     if usuario.rol == "Administrador":
@@ -95,3 +117,11 @@ def obtenerRol(usuario:object):
 def renderizarTemplate(plantilla):
     rol = session.get(Usuario, llaveAcceso())
     return render_template(plantilla, rol = rol, usuario = obtenerRol(rol))
+
+def renderizarLista(plantilla:str, lista:list):
+    rol = session.get(Usuario, llaveAcceso())
+    return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), lista = lista)
+
+def renderizarJson(plantilla:str, json:dict):
+    rol = session.get(Usuario, llaveAcceso())
+    return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), json = json)

@@ -82,12 +82,18 @@ class Grupo(Base):
     fecha_final = Column(Date, nullable=False)
     hora_inicial = Column(Time, nullable = False)
     hora_final = Column(Time, nullable = False)
-    docente = Column(Integer, ForeignKey("docentes.id"), nullable=False)
+    dias_de_clases = Column(String(255), nullable=False)
+    docente = Column(Integer, ForeignKey("docentes.id"), nullable=True)
+    curso = Column(Integer, ForeignKey("cursos.codigo"), nullable=False)
+    nombre = Column(String(255), nullable = False)
     
-    def __init__(self, fecha_inicial, fecha_final, hora_inicial, hora_final, docente, codigo):
+    def __init__(self, fecha_inicial, fecha_final, hora_inicial, hora_final, docente, codigo, curso, dias, nombre):
         self.codigo = codigo
-        self.hora_inicial = hora_inicial
-        self.hora_final = hora_final
-        self.fecha_inicial = fecha_inicial
-        self.fecha_final = fecha_final
+        self.hora_inicial = datetime.strptime(hora_inicial, "%H:%M").time()
+        self.hora_final = datetime.strptime(hora_final, "%H:%M").time()
+        self.fecha_inicial = datetime.strptime(fecha_inicial, "%Y-%m-%d").date()
+        self.fecha_final = datetime.strptime(fecha_final, "%Y-%m-%d").date()
         self.docente = docente
+        self.curso = curso
+        self.dias_de_clases = dias
+        self.nombre = nombre

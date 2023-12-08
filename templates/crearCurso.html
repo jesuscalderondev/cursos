@@ -1,30 +1,27 @@
 {% extends 'template.html'%} {%block titulo%} Crear Curso {%endblock%} {%block
 cuerpo%}
-<form>
-  <div class="col-md-12 d-flex justify-content-center align-items-center" style="height: 100vh">
-    <div class="col-md-4 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column">
-      <p class="fs-2">Crear Curso</p>
-      <input type="text" class="form-control mb-3" placeholder="Nombre" aria-label="Nombre" id="nombre" />
-      <input type="text" class="form-control mb-3" placeholder="Ciclo" aria-label="Ciclo" id="ciclo" />
-      <input type="number" class="form-control mb-3" placeholder="Duración" aria-label="Duración" id="duracion" />
+<div class="col-md-12 d-flex justify-content-center align-items-center" style="height: 100vh">
+  <div class="col-md-4 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column">
+    <p class="fs-2">Crear Curso</p>
+    <input type="text" class="form-control mb-3" placeholder="Nombre" aria-label="Nombre" id="nombre" />
+    <input type="text" class="form-control mb-3" placeholder="Ciclo" aria-label="Ciclo" id="ciclo" />
+    <input type="number" class="form-control mb-3" placeholder="Duración" aria-label="Duración" id="duracion" />
 
-      <button type="button" class="btn btn-primary" style="width: 210px" id="async">
-        Crear
-      </button>
-    </div>
+    <button type="button" class="btn btn-primary" style="width: 210px" id="async">
+      Crear
+    </button>
   </div>
-</form>
+</div>
 <script>
   var boton = document.getElementById("async");
-  var form = document.querySelector("form");
   boton.addEventListener('click', function () {
 
-    var nombre = document.getElementById("nombre").value;
-    var ciclo = document.getElementById("ciclo").value;
-    var duracion = document.getElementById("duracion").value;
+    var nombre = document.getElementById("nombre");
+    var ciclo = document.getElementById("ciclo");
+    var duracion = document.getElementById("duracion");
 
     var formData = new FormData();
-    var jsonData = { nombre: nombre, ciclo: ciclo, duracion: duracion };
+    var jsonData = { nombre: nombre.value, ciclo: ciclo.value, duracion: duracion.value };
 
 
     fetch('/curso/crear', {
@@ -41,13 +38,11 @@ cuerpo%}
 
       .then(
         data => {
-          console.log(data);
+          alert(data.mensaje);
           if (data.respuesta == "Exitosa") {
-            alert("Curso registrado de manera exitosa");
-            form.reset();
-          }
-          else {
-            //Debes poner una notificación y mostrar el mensaje
+            nombre.value = "";
+            ciclo.value = "";
+            duracion.value = "";
           }
         }
       )

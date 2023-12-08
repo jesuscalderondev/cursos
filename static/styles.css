@@ -1,6 +1,8 @@
-.alert{
-    position: absolute;
-    z-index: 100;
-    display: none;
-    margin-right: -100%;
+.iconos{
+    text-decoration: none;
+}
+
+.iconos{
+    font-size: 1.2rem;
+    padding: 5px 0;
 }

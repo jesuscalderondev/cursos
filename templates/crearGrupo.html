@@ -1,135 +1,151 @@
 {% extends 'template.html'%} {%block titulo%} Crear Docente {%endblock%} {%block
-    cuerpo%}
-    <div
-      class="col-md-12 d-flex justify-content-center align-items-center"
-      style="height: 100vh"
-    >
-      <div
-        class="col-md-6 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column"
-      >
-        <p class="fs-2">Crear Grupo</p>
-        <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
-            <input
-              type="text"
-              class="form-control" style="margin-right:5px"
-              placeholder="Nombre"
-              aria-label="Nombre"
-              id="nombre"
-            />
-            <input
-                type="text"
-                class="form-control" style="margin-left:5px"
-                placeholder="Codigo"
-                aria-label="Codigo"
-                id="codigo"
-            />
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
-          <div style="width:100%; margin-right:5px">
-            <label for="horaInicio" class="form-label">Fecha de inicio</label>
-            <input
-                id="fechaInicio"
-                type="date"
-                class="form-control"
-                placeholder="Fecha inicio"
-                aria-label="Fecha inicio"
-            />
-          </div>
-          <div style="width:100%; margin-left:5px">
-            <label for="horaFinalizacion" class="form-label">Fecha de finalizacion</label>
-            <input
-                id="fechaFinalizacion"
-                type="date"
-                class="form-control" 
-                placeholder="Fecha final"
-                aria-label="Fecha final"
-            />
-          </div>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
-            <div style="width:100%; margin-right:5px">
-              <label for="horaInicio" class="form-label">Hora de inicio</label>
-              <input
-                  id="horaInicio"
-                  type="time"
-                  class="form-control"
-                  placeholder="Hora inicio"
-                  aria-label="Hora inicio"
-              />
-            </div>
-            <div style="width:100%; margin-left:5px">
-              <label for="horaFinalizacion" class="form-label">Hora de finalizacion</label>
-              <input
-                  id="horaFinalizacion"
-                  type="time"
-                  class="form-control" 
-                  placeholder="Hora final"
-                  aria-label="Hora final"
-              />
-            </div>
-        </div>
-        <select class="form-select mb-3" aria-label="Default select example" id="docente">
-          <option selected>Seleccionar docente</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-        <button
-          type="button"
-          class="btn btn-primary"
-          style="width: 210px"
-          id="async"
-        >
-          Crear
-        </button>
+cuerpo%}
+<div class="col-md-12 d-flex justify-content-center align-items-center" style="height: 100vh">
+  <div class="col-md-6 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column">
+    <p class="fs-2">Crear Grupo</p>
+    <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
+      <input type="text" class="form-control" style="margin-right:5px" placeholder="Nombre" aria-label="Nombre"
+        id="nombre" />
+      <input type="text" class="form-control" style="margin-left:5px" placeholder="Codigo" aria-label="Codigo"
+        id="codigo" />
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
+      <div style="width:100%; margin-right:5px">
+        <label for="horaInicio" class="form-label">Fecha de inicio</label>
+        <input id="fechaInicio" type="date" class="form-control" placeholder="Fecha inicio" aria-label="Fecha inicio" />
+      </div>
+      <div style="width:100%; margin-left:5px">
+        <label for="horaFinalizacion" class="form-label">Fecha de finalizacion</label>
+        <input id="fechaFinalizacion" type="date" class="form-control" placeholder="Fecha final"
+          aria-label="Fecha final" />
       </div>
     </div>
-    <script>
-      var boton = document.getElementById("async");
-    
-        boton.addEventListener('click', function(){
-    
-          var nombre = document.getElementById("nombre").value;
-          var codigo = document.getElementById("codigo").value;
-          var horaInicio = document.getElementById("horaInicio").value;
-          var horaFinalizacion = document.getElementById("horaFinalizacion").value;
-          var fechaInicio = document.getElementById("fechaInicio").value;
-          var fechaFinalizacion = document.getElementById("fechaFinalizacion").value;
-          var docente = document.getElementById("docente").value;
-    
-          var formData = new FormData();
-          var jsonData = {nombre,codigo,horaInicio,horaFinalizacion,fechaInicio,fechaFinalizacion,docente};
-    
-    
-            fetch('/crear', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(jsonData)
-            })
-    
-            .then(
-                response => response.json()
-            )
-    
-            .then(
-                data => {
-                    console.log(data);
-                    if(data.respuesta == "Exitosa"){
-                        location.replace("/");
-                    }
-                    else{
-                        //Debes poner una notificación y mostrar el mensaje
-                    }
-                }
-            )
-    
-            .catch(error =>{
-                //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
-            })
-        })
-    </script>
-      {%endblock%}
+    <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%;padding:0px 20px">
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <input type="checkbox" value="Lunes" id="Lunes">
+        <label for="Lunes">L</label>
+      </div>
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <input type="checkbox" value="Martes" id="Martes">
+        <label for="Martes">M</label>
+      </div>
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <input type="checkbox" value="Miercoles" id="Miercoles">
+        <label for="Miercoles">M</label>
+      </div>
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <input type="checkbox" value="Jueves" id="Jueves">
+        <label for="Jueves">J</label>
+      </div>
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <input type="checkbox" value="Viernes" id="Viernes">
+        <label for="Viernes">V</label>
+      </div>
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <input type="checkbox" value="Sabado" id="Sabado">
+        <label for="Sabado">S</label>
+      </div>
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <input type="checkbox" value="Domingo" id="Domingo">
+        <label for="Domingo">D</label>
+      </div>
     </div>
+    <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
+      <div style="width:100%; margin-right:5px">
+        <label for="horaInicio" class="form-label">Hora de inicio</label>
+        <input id="horaInicio" type="time" class="form-control" placeholder="Hora inicio" aria-label="Hora inicio" />
+      </div>
+      <div style="width:100%; margin-left:5px">
+        <label for="horaFinalizacion" class="form-label">Hora de finalizacion</label>
+        <input id="horaFinalizacion" type="time" class="form-control" placeholder="Hora final"
+          aria-label="Hora final" />
+      </div>
+    </div>
+    <select class="form-select mb-3" aria-label="Default select example" id="docente">
+      <option selected>Seleccionar docente</option>
+      {%for i in docentes%}
+      <option value="{{i.id}}">{{i.nombres}} {{i.apellido_paterno}}</option>
+      {%endfor%}
+    </select>
+    <select class="form-select mb-3" aria-label="Default select example" id="curso">
+      <option selected>Seleccionar curso</option>
+      {%for i in cursos%}
+      <option value="{{i.codigo}}">{{i.nombre}} {{i.ciclo}}</option>
+      {%endfor%}
+    </select>
     
+    <button type="button" class="btn btn-primary" style="width: 210px" id="async">
+      Crear
+    </button>
+  </div>
+</div>
+<script>
+  var boton = document.getElementById("async");
+
+  boton.addEventListener('click', function () {
+
+    var nombre = document.getElementById("nombre");
+    var codigo = document.getElementById("codigo");
+    var horaInicio = document.getElementById("horaInicio");
+    var horaFinalizacion = document.getElementById("horaFinalizacion");
+    var fechaInicio = document.getElementById("fechaInicio");
+    var fechaFinalizacion = document.getElementById("fechaFinalizacion");
+    var docente = document.getElementById("docente");
+    var curso = document.getElementById("curso");
+
+    var Lunes = document.getElementById("Lunes");
+    var Martes = document.getElementById("Martes");
+    var Miercoles = document.getElementById("Miercoles");
+    var Jueves = document.getElementById("Jueves");
+    var Viernes = document.getElementById("Viernes");
+    var Sabado = document.getElementById("Sabado");
+    var Domingo = document.getElementById("Domingo");
+
+    var formData = new FormData();
+    var jsonData = { nombre: nombre.value, codigo: codigo.value, horaInicio: horaInicio.value, horaFinalizacion: horaFinalizacion.value, fechaInicio: fechaInicio.value, fechaFinalizacion: fechaFinalizacion.value, docente: docente.value, curso: curso.value, Lunes: Lunes.checked, Martes: Martes.checked, Miercoles: Miercoles.checked, Jueves: Jueves.checked, Viernes: Viernes.checked, Sabado: Sabado.checked, Domingo: Domingo.checked };
+
+
+
+    fetch('/grupo/crear', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(jsonData)
+    })
+
+      .then(
+        response => response.json()
+      )
+
+      .then(
+        data => {
+          alert(data.mensaje);
+          if (data.respuesta == "Exitosa") {
+            nombre.value = "";
+            codigo.value = "";
+            horaInicio.value = "";
+            horaFinalizacion.value = "";
+            fechaInicio.value = "";
+            fechaFinalizacion.value = "";
+            docente.value = "";
+            curso.value = "";
+
+            Lunes.checked = false;
+            Martes.checked = false;
+            Miercoles.checked = false;
+            Jueves.checked = false;
+            Viernes.checked = false;
+            Sabado.checked = false;
+            Domingo.checked = false;
+          }
+        }
+      )
+
+      .catch(error => {
+        //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
+      })
+  })
+</script>
+{%endblock%}
+</div>

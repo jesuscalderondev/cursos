@@ -53,26 +53,8 @@ def registrarAdministrador():
         crearAdministrador(formulario)
         return "Exitosamente creado el administrador"
     else:
-        return renderizarTemplate("registrarAdministrador.html")
+        return render_template("registrarAdministrador.html")
 
-@app.route('/registrar_docente', methods=['POST', 'GET'])
-def regsitrarDocente():
-    if validarSesion():
-        if request.method == 'POST':
-            formulario = request.get_json()
-            try:
-                print("SIIIU")
-                crearDocente(formulario)
-                operacion = "Exitosa"
-                mensaje = "Docente registrado de manera exitosa"
-            except:
-                operacion = "Fallida"
-                mensaje = "Correo electronico usado con anterioridad"
-            return jsonify(respuesta = operacion, mensaje = mensaje)
-        else:
-            rol = session.get(Usuario, llaveAcceso())
-            return renderizarTemplate("crearDocente.html")
-    return redirect('/')
 
 """ 
 @app.route('/subir_estudiantes', methods = ['POST'])
@@ -89,12 +71,6 @@ def subirEstudiantes():
 #------------------------------------  Cursos ------------------------------------
 cursos = Blueprint("cursos", __name__, url_prefix='/curso')
 
-@cursos.route('/lista')
-def listarCursos():
-    respuesta = redirect('/')
-    if validarSesion():
-        respuesta = render_template('cursos.html')
-    return respuesta
 
 @cursos.route('/crear', methods=['GET', 'POST'])
 def registrarCurso():
@@ -114,16 +90,47 @@ def registrarCurso():
             
     return redirect("/")
 
+@cursos.route('/lista')
+def listarCursos():
+    if validarSesion():
+        lista = session.query(Curso).all()
+        print(lista)
+        return renderizarLista("listarCursos.html", lista)
+    return redirect("/")
+
 app.register_blueprint(cursos)
 #----------------------------------- Docentes ------------------------------------
-docentes = Blueprint("docentes", __name__, url_prefix='/docentes')
+docentes = Blueprint("docentes", __name__, url_prefix='/docente')
 
 @docentes.route('/lista')
 def listarDocentes():
     respuesta = redirect('/')
     if validarSesion():
-        respuesta = renderizarTemplate('docentes.html')
+        lista = session.query(Docente).all()
+        respuesta = renderizarLista('listarDocentes.html', lista)
     return respuesta
+
+@docentes.route('/crear', methods=['POST', 'GET'])
+def regsitrarDocente():
+    if validarSesion():
+        print(request.method)
+        if request.method == 'POST':
+            formulario = request.get_json()
+            try:
+                print("SIIIU")
+                crearDocente(formulario)
+                operacion = "Exitosa"
+                mensaje = "Docente registrado de manera exitosa"
+            except:
+                operacion = "Fallida"
+                mensaje = "Correo electronico usado con anterioridad"
+            return jsonify(respuesta = operacion, mensaje = mensaje)
+        else:
+            rol = session.get(Usuario, llaveAcceso())
+            return renderizarTemplate("crearDocente.html")
+    return redirect('/')
+
+app.register_blueprint(docentes)
 
 #--------------------------------- API'S -------------------------------------
 apis = Blueprint("apis", __name__, url_prefix='/api')
@@ -150,8 +157,85 @@ def filtrarDocente():
         respuesta = json_docentes
     return respuesta
 
-
+@apis.route('/filtrar_grupo', methods=['POST'])
+def filtrarGrupo():
+    if validarSesion():
+        formulario = request.get_json()
+        parametro = formulario["filtro"]
+        
+        grupos_filtrados = session.query(Grupo).filter(or_(Grupo.codigo.like(f'%{parametro}%'), Grupo.nombre.like(f'%{parametro}%'), Grupo.hora_inicial.like(f'%{parametro}%'), Grupo.hora_final.like(f'%{parametro}%'), Grupo.hora_inicial.like(f'%{parametro}%'), Grupo.dias_de_clases.like(f'%{parametro}%'))).all()
+        
+        json = {}
+        
+        for i in grupos_filtrados:
+            if i.docente != None:
+                docente = session.get(Docente, i.docente)
+                docente = f'{docente.nombres} {docente.apellido_paterno}'
+            else:
+                docente = "Sin asignar"
+            curso = session.get(Curso, i.curso)
+            
+            json[f'{i.codigo}'] = {
+                'docente' : docente,
+                'curso' : curso.nombre,
+                'nombre' : i.nombre,
+                'horario' : f'{i.hora_inicial} a {i.hora_final}',
+                'dias' : i.dias_de_clases[:-2],
+                'codigo' : i.codigo
+            }
+        return jsonify(respuesta = "Exitosa", json = json)
+    return jsonify(respuesta = "Fallida")
 app.register_blueprint(apis)
+
+
+#-------------------------------------- Grupos -----------------------------------------
+grupos = Blueprint("grupos", __name__, url_prefix="/grupo")
+
+@grupos.route('/crear', methods=['GET', 'POST'])
+def registrarGrupo():
+    if validarSesion():
+        if request.method == "POST":
+
+            formulario = request.get_json()
+            crearGrupo(formulario)
+            mensaje = "Grupo creado exitosamente"
+            operacion = "Exitosa"
+        
+            return jsonify(mensaje = mensaje, respuesta = operacion)
+        rol = session.get(Usuario, llaveAcceso())
+        listaDocentes = session.query(Docente).all()
+        listaCursos = session.query(Curso).all()
+        return render_template("crearGrupo.html", rol = rol, usuario = obtenerRol(rol), docentes = listaDocentes, cursos = listaCursos)
+    return redirect('/')
+
+@grupos.route('/lista')
+def listarGrupos():
+    if validarSesion():
+        lista = session.query(Grupo).all()
+        json = []
+        
+        for i in lista:
+            if i.docente != None:
+                docente = session.get(Docente, i.docente)
+                docente = f'{docente.nombres} {docente.apellido_paterno}'
+            else:
+                docente = "Sin asignar"
+            curso = session.get(Curso, i.curso)
+            print(i.codigo)
+            json.append({
+                'docente' : docente,
+                'curso' : curso.nombre,
+                'nombre' : i.nombre,
+                'horario' : f'{i.hora_inicial} a {i.hora_final}',
+                'dias' : i.dias_de_clases[:-2],
+                'codigo' : i.codigo
+            })
+        return renderizarLista("listarGrupos.html", lista = json)
+    return redirect("/")
+
+
+
+app.register_blueprint(grupos)
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)

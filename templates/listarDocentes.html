@@ -30,42 +30,35 @@ cuerpo%}
   <table class="table">
     <thead class="table-dark">
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
+        <th scope="col">Código</th>
+        <th scope="col">Nombres</th>
+        <th scope="col">Apellido paterno</th>
+        <th scope="col">Apellido materno</th>
+        <th scope="col">Email</th>
         <th scope="col">Funcionalidades</th>
       </tr>
     </thead>
     <tbody>
+      {%for i in lista%}
       <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
+        <th>{{i.id}}</th>
+        <td>{{i.nombres}}</td>
+        <td>{{i.apellido_paterno}}</td>
+        <td>{{i.apellido_materno}}</td>
+        <td>{{i.email}}</td>
         <td>
-          <i class="fa-regular fa-eye" style="color: #08f"></i>
-          <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
-          <i class="fa-solid fa-trash" style="color: #08f"></i>
+          <a class="iconos" href="/docente/ver/{{i.id}}">
+            <i class="fa-regular fa-eye" style="color: #08f"></i>
+          </a>
+          <a class="iconos" href="/docente/editar/{{i.id}}">
+            <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
+          </a>
+          <a class="iconos" href="/docente/eliminar/{{i.id}}">
+            <i class="fa-solid fa-trash" style="color: #08f"></i>
+          </a>
         </td>
       </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>
-          <i class="fa-regular fa-eye" style="color: #08f"></i>
-          <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
-          <i class="fa-solid fa-trash" style="color: #08f"></i>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td colspan="2">Larry the Bird</td>
-        <td>
-          <i class="fa-regular fa-eye" style="color: #08f"></i>
-          <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
-          <i class="fa-solid fa-trash" style="color: #08f"></i>
-        </td>
-      </tr>
+      {%endfor%}
     </tbody>
   </table>
   {%endblock%}
