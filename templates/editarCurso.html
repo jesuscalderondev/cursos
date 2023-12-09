@@ -1,0 +1,51 @@
+{% extends 'template.html'%} {%block titulo%} Crear Curso {%endblock%} {%block
+cuerpo%}
+<div class="col-md-12 d-flex justify-content-center align-items-center" style="height: 100vh">
+  <div class="col-md-4 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column">
+    <p class="fs-2">Crear Curso</p>
+    <input type="text" class="form-control mb-3" placeholder="Nombre" aria-label="Nombre" id="nombre" value="{{registro.nombre}}"/>
+    <input type="text" class="form-control mb-3" placeholder="Ciclo" aria-label="Ciclo" id="ciclo" value="{{registro.ciclo}}"/>
+    <input type="number" class="form-control mb-3" placeholder="Duración" aria-label="Duración" id="duracion" value="{{registro.duracion}}"/>
+
+    <button type="button" class="btn btn-primary" style="width: 210px" id="async">
+      Crear
+    </button>
+  </div>
+</div>
+<script>
+  var boton = document.getElementById("async");
+  boton.addEventListener('click', function () {
+
+    var nombre = document.getElementById("nombre");
+    var ciclo = document.getElementById("ciclo");
+    var duracion = document.getElementById("duracion");
+
+    var formData = new FormData();
+    var jsonData = { nombre: nombre.value, ciclo: ciclo.value, duracion: duracion.value };
+
+
+    fetch('/curso/actualizar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(jsonData)
+    })
+
+      .then(
+        response => response.json()
+      )
+
+      .then(
+        data => {
+          alert(data.mensaje);
+        }
+      )
+
+      .catch(error => {
+        //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
+      })
+  })
+</script>
+{%endblock%}
+</div>
