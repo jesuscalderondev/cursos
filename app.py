@@ -107,7 +107,11 @@ def listarDocentes():
     respuesta = redirect('/')
     if validarSesion():
         lista = session.query(Docente).all()
-        respuesta = renderizarLista('listarDocentes.html', lista)
+        lista2 = []
+        
+        for i in lista:
+            lista2.append(session.get(Usuario, i.usuario).email)
+        respuesta = renderizarListas('listarDocentes.html', lista, lista2)
     return respuesta
 
 @docentes.route('/crear', methods=['POST', 'GET'])
@@ -139,8 +143,13 @@ def editarDocenteFormulario(id):
 
 @docentes.route('/actualizar', methods = ['POST'])
 def editarDocente():
+    operacion = "Fallida"
+    mensaje = "Sin modificaciones"
     if validarSesion():
-        actualizarDocente(formulario, id)
+        formulario = request.get_json()
+        actualizarDocente(formulario)
+        operacion = "Exitosa"
+        mensaje = "Docente actualizado exitosamanete"
     return jsonify(respuesta = operacion, mensaje = mensaje)
 
 app.register_blueprint(docentes)
@@ -293,9 +302,9 @@ def eliminarGrupo(codigo):
             grupo = session.get(Grupo, codigo)
             session.delete(grupo)
             session.commit()
-            mensaje = "El grupo fue eliminado"
+            return redirect('/grupo/lista')
         except:
-            mensaje = "El grupo no existe"
+            return "Este registro no existe"
     return jsonify(mensaje = mensaje)
 
 @grupos.route('/editar/<string:codigo>', methods = ['GET'])

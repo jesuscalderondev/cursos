@@ -19,7 +19,7 @@ cuerpo%}
         placeholder="Nombres"
         aria-label="Nombres"
         id="nombres"
-        value="{{regitro.nombres}}"
+        value="{{registro.nombres}}"
       />
       <input
         type="date"
@@ -60,10 +60,10 @@ cuerpo%}
       placeholder="Correo Electronico"
       aria-label="Correo Electronico"
       id="email"
-      value="{{registro.email}}"
+      value="{{email}}"
     />
     <button class="btn btn-primary" style="width: 210px" id="async">
-      Crear
+      Actualizar
     </button>
   </div>
 </div>
@@ -90,6 +90,7 @@ cuerpo%}
       nombres: nombres.value,
       apellidoMaterno: apellidoMaterno.value,
       fechaNacimiento: fechaNacimiento.value,
+      id: '{{registro.id}}'
     };
 
     if (validateEmail(email.value)) {
@@ -103,11 +104,7 @@ cuerpo%}
         .then((response) => response.json())
 
         .then((data) => {
-          console.log(data);
           alert(data.mensaje);
-          if (data.respuesta == "Exitosa") {
-            alert("actualizado correctamente");
-          }
         })
 
         .catch((error) => {

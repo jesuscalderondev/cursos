@@ -58,6 +58,27 @@ def crearDocente(form):
         docente = Docente(nombres, apellidoPaterno, apellidoMaterno, fechaNacimiento, usuario.id)
         session.add(docente)
         session.commit()
+        
+def actualizarDocente(form):
+    nombres = form['nombres']
+    apellidoPaterno = form['apellidoPaterno']
+    apellidoMaterno = form['apellidoMaterno']
+    fechaNacimiento = form['fechaNacimiento']
+    email = form['email']
+    id = form['id']
+    
+    with Session() as session:
+        docente = session.get(Docente, id)
+        docente.nombres = nombres
+        docente.apellido_paterno = apellidoPaterno
+        docente.apellido_materno = apellidoMaterno
+        docente.fecha_nacimiento = datetime.strptime(fechaNacimiento, "%Y-%m-%d").date()
+        session.add(docente)
+        
+        usuario = session.get(Usuario, docente.usuario)
+        usuario.email = email
+        session.add(usuario)
+        session.commit()
 
 
 def crearAdministrador(form):
@@ -151,6 +172,10 @@ def renderizarLista(plantilla:str, lista:list):
     rol = session.get(Usuario, llaveAcceso())
     return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), lista = lista)
 
+def renderizarListas(plantilla:str, lista1:list, lista2:list):
+    rol = session.get(Usuario, llaveAcceso())
+    return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), lista = lista1, lista2 = lista2)
+
 def renderizarJson(plantilla:str, json:dict):
     rol = session.get(Usuario, llaveAcceso())
     return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), json = json)
@@ -160,3 +185,8 @@ def renderizarEditGrupo(plantilla, objeto):
     docentes = session.query(Docente).all()
     cursos = session.query(Curso).all()
     return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), registro = objeto, docentes = docentes, cursos = cursos)
+
+def renderizarEditDocente(plantilla, objeto):
+    rol = session.get(Usuario, llaveAcceso())
+    email = session.get(Usuario, objeto.usuario).email
+    return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), registro = objeto, email = email)
