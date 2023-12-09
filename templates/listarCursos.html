@@ -1,5 +1,54 @@
 {% extends 'template.html'%} {%block titulo%} Cursos {%endblock%} {%block
 cuerpo%}
+<script>
+  function crear() {
+    location.replace("/curso/crear");
+  }
+
+  function filtrar(filtrado) {
+    var jsonData = { filtro: filtrado.value };
+
+    fetch("/api/filtrar_curso", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(jsonData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        var tabla = document.querySelector("tbody");
+        var filas = tabla.getElementsByTagName("tr");
+
+        // Verifica si hay más de una fila (excluye la fila de encabezado)
+        for (var i = filas.length - 1; i >= 0; i--) {
+          tabla.deleteRow(i);
+        }
+
+        var llaves = Object.keys(data.json);
+        llaves.forEach((curso) => {
+          var fila = tabla.insertRow();
+          var celda1 = fila.insertCell();
+          var celda2 = fila.insertCell();
+          var celda3 = fila.insertCell();
+          var celda4 = fila.insertCell();
+          console.log(data["json"][curso]);
+          celda1.innerHTML = data["json"][curso].codigo;
+          celda2.innerHTML = data["json"][curso].nombre;
+          celda3.innerHTML = data["json"][curso].curso;
+          celda4.innerHTML =
+            "<a href='/curso/ver/" +
+            data["json"][curso].codigo +
+            "' class='iconos'><i class='fa-regular fa-eye' style='color: #08f'></i></a><a href='/curso/editar/" +
+            data["json"][curso].codigo +
+            "' class='iconos'><i class='fa-regular fa-pen-to-square' style='color: #08f'></i></a><a href='/curso/eliminar/" +
+            data["json"][curso].codigo +
+            "' class='iconos'><i class='fa-solid fa-trash' style='color: #08f'></i></a>";
+        });
+      });
+  }
+</script>
 <div
   style="height: 100vh"
   class="d-flex justify-content-center align-items-center flex-column"
@@ -14,17 +63,17 @@ cuerpo%}
         type="button"
         class="btn btn-outline-primary"
         style="width: 210px"
+        onclick="crear()"
       >
         Crear Curso
       </button>
       <input
+        id="filtrado"
+        oninput="filtrar(this)"
         type="text"
         class="form-control mx-2"
         aria-label="Text input with checkbox"
       />
-      <button type="button" class="btn btn-primary">
-        <i class="fa-solid fa-magnifying-glass" style="color: white"></i>
-      </button>
     </div>
   </div>
   <table class="table">

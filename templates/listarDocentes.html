@@ -14,6 +14,7 @@ cuerpo%}
         type="button"
         class="btn btn-outline-primary"
         style="width: 210px"
+        onclick="crear()"
       >
         Crear Docente
       </button>
@@ -21,10 +22,9 @@ cuerpo%}
         type="text"
         class="form-control mx-2"
         aria-label="Text input with checkbox"
+        id="filtrado"
+        oninput="filtrar(this)"
       />
-      <button type="button" class="btn btn-primary">
-        <i class="fa-solid fa-magnifying-glass" style="color: white"></i>
-      </button>
     </div>
   </div>
   <table class="table">
@@ -61,5 +61,60 @@ cuerpo%}
       {%endfor%}
     </tbody>
   </table>
+  <script>
+    function crear() {
+      location.replace("/docente/crear");
+    }
+
+    function filtrar(filtrado) {
+      var jsonData = { filtrado: filtrado.value };
+
+      fetch("/api/filtrar_docente", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jsonData),
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          var tabla = document.querySelector("tbody");
+          var filas = tabla.getElementsByTagName("tr");
+
+          // Verifica si hay más de una fila (excluye la fila de encabezado)
+          for (var i = filas.length - 1; i >= 0; i--) {
+            tabla.deleteRow(i);
+          }
+
+          var llaves = Object.keys(data.json);
+          llaves.forEach((docente) => {
+            var fila = tabla.insertRow();
+            var celda1 = fila.insertCell();
+            var celda2 = fila.insertCell();
+            var celda3 = fila.insertCell();
+            var celda4 = fila.insertCell();
+            var celda5 = fila.insertCell();
+            var celda6 = fila.insertCell();
+            console.log(data["json"][docente]);
+            celda1.innerHTML = data["json"][docente].codigo;
+            celda2.innerHTML = data["json"][docente].nombres;
+            celda3.innerHTML = data["json"][docente].docente;
+            celda4.innerHTML = data["json"][docente].curso;
+            celda5.innerHTML = data["json"][docente].horario;
+            celda6.innerHTML =
+              "<a href='/docente/ver/" +
+              data["json"][docente].codigo +
+              "' class='iconos'><i class='fa-regular fa-eye' style='color: #08f'></i></a><a href='/docente/editar/" +
+              data["json"][docente].codigo +
+              "' class='iconos'><i class='fa-regular fa-pen-to-square' style='color: #08f'></i></a><a href='/docente/eliminar/" +
+              data["json"][docente].codigo +
+              "' class='iconos'><i class='fa-solid fa-trash' style='color: #08f'></i></a>";
+          });
+        });
+    }
+  </script>
   {%endblock%}
 </div>
