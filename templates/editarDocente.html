@@ -1,0 +1,120 @@
+{% extends 'template.html'%} {%block titulo%}Editar Docente{%endblock%} {%block
+cuerpo%}
+<div
+  class="col-md-12 d-flex justify-content-center align-items-center"
+  style="height: 100vh"
+>
+  <div
+    class="col-md-6 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column"
+  >
+    <p class="fs-2">Editar Docente</p>
+    <div
+      class="d-flex justify-content-between align-items-center mb-3"
+      style="width: 100%"
+    >
+      <input
+        type="text"
+        class="form-control"
+        style="margin-right: 5px"
+        placeholder="Nombres"
+        aria-label="Nombres"
+        id="nombres"
+        value="{{regitro.nombres}}"
+      />
+      <input
+        type="date"
+        class="form-control"
+        style="margin-left: 5px"
+        placeholder="Fecha de nacimiento"
+        aria-label="Fecha de nacimiento"
+        id="fechaNacimiento"
+        value="{{registro.fecha_nacimiento}}"
+      />
+    </div>
+    <div
+      class="d-flex justify-content-between align-items-center mb-3"
+      style="width: 100%"
+    >
+      <input
+        type="text"
+        class="form-control"
+        style="margin-right: 5px"
+        placeholder="Apellido Paterno"
+        aria-label="Apellido Paterno"
+        id="apellidoPaterno"
+        value="{{registro.apellido_paterno}}"
+      />
+      <input
+        type="text"
+        class="form-control"
+        style="margin-left: 5px"
+        placeholder="Apellido Materno"
+        aria-label="Apellido Materno"
+        id="apellidoMaterno"
+        value="{{registro.apellido_materno}}"
+      />
+    </div>
+    <input
+      type="email"
+      class="form-control mb-3"
+      placeholder="Correo Electronico"
+      aria-label="Correo Electronico"
+      id="email"
+      value="{{registro.email}}"
+    />
+    <button class="btn btn-primary" style="width: 210px" id="async">
+      Crear
+    </button>
+  </div>
+</div>
+<script>
+  var form = document.querySelector("form");
+  var boton = document.getElementById("async");
+
+  function validateEmail(email) {
+    const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return pattern.test(email);
+  }
+
+  boton.addEventListener("click", function () {
+    var email = document.getElementById("email");
+    var apellidoPaterno = document.getElementById("apellidoPaterno");
+    var apellidoMaterno = document.getElementById("apellidoMaterno");
+    var fechaNacimiento = document.getElementById("fechaNacimiento");
+    var nombres = document.getElementById("nombres");
+
+    var formData = new FormData();
+    var jsonData = {
+      email: email.value,
+      apellidoPaterno: apellidoPaterno.value,
+      nombres: nombres.value,
+      apellidoMaterno: apellidoMaterno.value,
+      fechaNacimiento: fechaNacimiento.value,
+    };
+
+    if (validateEmail(email.value)) {
+      fetch("/docente/actualizar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jsonData),
+      })
+        .then((response) => response.json())
+
+        .then((data) => {
+          console.log(data);
+          alert(data.mensaje);
+          if (data.respuesta == "Exitosa") {
+            alert("actualizado correctamente");
+          }
+        })
+
+        .catch((error) => {
+          console.log(error);
+          //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
+        });
+    }
+  });
+</script>
+{%endblock%}
