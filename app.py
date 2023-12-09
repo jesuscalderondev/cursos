@@ -150,7 +150,7 @@ def filtrarDocente():
                 'nombres' : docente.nombres,
                 'paterno' : docente.apellido_paterno,
                 'materno' : docente.apellido_materno,
-                'email' : docente.email,
+                'email' : session.get(Usuario, docente.usuario).email,
                 'id' : docente.id
             }
         
