@@ -130,6 +130,19 @@ def regsitrarDocente():
             return renderizarTemplate("crearDocente.html")
     return redirect('/')
 
+@docentes.route('/editar/<int:id>')
+def editarDocenteFormulario(id):
+    if validarSesion():
+        docente = session.get(Docente, id)
+        return renderizarEditDocente("editarDocente.html", docente)
+    return redirect("/")
+
+@docentes.route('/actualizar', methods = ['POST'])
+def editarDocente():
+    if validarSesion():
+        actualizarDocente(formulario, id)
+    return jsonify(respuesta = operacion, mensaje = mensaje)
+
 app.register_blueprint(docentes)
 
 #--------------------------------- API'S -------------------------------------
@@ -141,8 +154,10 @@ def filtrarDocente():
     if validarSesion() and request.method == 'POST':
         peticion = request.get_json()
         campo = peticion['filtrado']
-        consulta = session.query(Docente).filter(or_(Docente.nombres.like(f'%{campo}%'), Docente.apellido_paterno).like(f'%{campo}%'), Docente.apellido_materno.like(f'%{campo}%')).all()
-        
+        if campo != "":
+            consulta = session.query(Docente).filter(or_(Docente.nombres.like(f'%{campo}%'), Docente.apellido_paterno.like(f'%{campo}%'), Docente.apellido_materno.like(f'%{campo}%'))).all()
+        else:
+            consulta = session.query(Docente).all()
         json_docentes = {}
         
         for docente in consulta:

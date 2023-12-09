@@ -99,18 +99,18 @@ cuerpo%}
             var celda5 = fila.insertCell();
             var celda6 = fila.insertCell();
             console.log(data["json"][docente]);
-            celda1.innerHTML = data["json"][docente].codigo;
+            celda1.innerHTML = data["json"][docente].id;
             celda2.innerHTML = data["json"][docente].nombres;
-            celda3.innerHTML = data["json"][docente].docente;
-            celda4.innerHTML = data["json"][docente].curso;
-            celda5.innerHTML = data["json"][docente].horario;
+            celda3.innerHTML = data["json"][docente].paterno;
+            celda4.innerHTML = data["json"][docente].materno;
+            celda5.innerHTML = data["json"][docente].email;
             celda6.innerHTML =
               "<a href='/docente/ver/" +
-              data["json"][docente].codigo +
+              data["json"][docente].id +
               "' class='iconos'><i class='fa-regular fa-eye' style='color: #08f'></i></a><a href='/docente/editar/" +
-              data["json"][docente].codigo +
+              data["json"][docente].id +
               "' class='iconos'><i class='fa-regular fa-pen-to-square' style='color: #08f'></i></a><a href='/docente/eliminar/" +
-              data["json"][docente].codigo +
+              data["json"][docente].id +
               "' class='iconos'><i class='fa-solid fa-trash' style='color: #08f'></i></a>";
           });
         });
