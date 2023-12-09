@@ -228,6 +228,23 @@ def registrarGrupo():
         return render_template("crearGrupo.html", rol = rol, usuario = obtenerRol(rol), docentes = listaDocentes, cursos = listaCursos)
     return redirect('/')
 
+@grupos.route('/actualizar', methods=['GET', 'POST'])
+def editarGrupo():
+    if validarSesion():
+        if request.method == "POST":
+
+            formulario = request.get_json()
+            actualizarGrupo(formulario)
+            mensaje = "Grupo Actualizado exitosamente"
+            operacion = "Exitosa"
+        
+            return jsonify(mensaje = mensaje, respuesta = operacion)
+        rol = session.get(Usuario, llaveAcceso())
+        listaDocentes = session.query(Docente).all()
+        listaCursos = session.query(Curso).all()
+        return render_template("crearGrupo.html", rol = rol, usuario = obtenerRol(rol), docentes = listaDocentes, cursos = listaCursos)
+    return redirect('/')
+
 @grupos.route('/lista')
 def listarGrupos():
     if validarSesion():
@@ -267,12 +284,12 @@ def eliminarGrupo(codigo):
     return jsonify(mensaje = mensaje)
 
 @grupos.route('/editar/<string:codigo>', methods = ['GET'])
-def editarGrupo(codigo):
+def editarGrupoFormulario(codigo):
     respuesta = redirect("/")
     if validarSesion():
         try:
             grupo = session.get(Grupo, codigo)
-            renderizarEdit("editarGrupo", registro = grupo)
+            return renderizarEditGrupo("editarGrupo.html", grupo)
         except:
             mensaje = "El grupo no existe"
     return jsonify(mensaje = mensaje)

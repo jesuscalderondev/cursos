@@ -106,6 +106,35 @@ def crearGrupo(form):
         session.add(grupo)
         session.commit()
     
+def actualizarGrupo(form):
+    with Session() as session:
+        nombre = form["nombre"]
+        codigo = form["codigo"]
+        fechaInicio = form["fechaInicio"]
+        fechaFinalizacion = form["fechaFinalizacion"]
+        horaInicio = form["horaInicio"]
+        horaFinalizacion = form["horaFinalizacion"]
+        docente = form["docente"]
+        curso = int(form["curso"])
+        
+        semana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
+        dias = ""
+        for i in semana:
+            if form[i] == True:
+                dias += f'{i}, '
+                
+        grupo = session.get(Grupo, codigo)
+        
+        grupo.nombre = nombre
+        grupo.fecha_inicial = datetime.strptime(fechaInicio, "%Y-%m-%d").date()
+        grupo.fecha_final = datetime.strptime(fechaFinalizacion, "%Y-%m-%d").date()
+        grupo.hora_final = datetime.strptime(horaFinalizacion[:-4], "%H:%M").time()
+        grupo.hora_inicial = datetime.strptime(horaInicio[:-4], "%H:%M").time()
+        grupo.docente = docente
+        grupo.curso = curso
+        grupo.dias_de_clases = dias
+        session.add(grupo)
+        session.commit()
     
 def obtenerRol(usuario:object):
     if usuario.rol == "Administrador":
@@ -126,6 +155,8 @@ def renderizarJson(plantilla:str, json:dict):
     rol = session.get(Usuario, llaveAcceso())
     return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), json = json)
 
-def renderizarEdit(plantilla, objeto):
+def renderizarEditGrupo(plantilla, objeto):
     rol = session.get(Usuario, llaveAcceso())
-    return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), registro = objeto)
+    docentes = session.query(Docente).all()
+    cursos = session.query(Curso).all()
+    return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), registro = objeto, docentes = docentes, cursos = cursos)

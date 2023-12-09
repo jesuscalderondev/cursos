@@ -4,9 +4,9 @@
       <div class="col-md-6 bg-white rounded py-3 px-5 d-flex justify-content-center align-items-center flex-column">
         <p class="fs-2">Editar Grupo</p>
         <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
-          <input type="text" class="form-control" style="margin-right:5px" placeholder="Nombre" aria-label="Nombre"
+          <input type="text" class="form-control" value="{{registro.nombre}}" style="margin-right:5px" placeholder="Nombre" aria-label="Nombre"
             id="nombre" />
-          <input type="text" class="form-control" style="margin-left:5px" placeholder="Codigo" aria-label="Codigo"
+          <input type="text" class="form-control" disabled value="{{registro.codigo}}" style="margin-left:5px" placeholder="Codigo" aria-label="Codigo"
             id="codigo" />
         </div>
         <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
@@ -70,36 +70,38 @@
             <label for="Sabado">S</label>
           </div>
           <div class="d-flex justify-content-center align-items-center flex-column">
+            {%if "Domingo" in registro.dias_de_clases%}
+            <input type="checkbox" checked value="Domingo" id="Domingo">
+            {%else%}
             <input type="checkbox" value="Domingo" id="Domingo">
+            {%endif%}
             <label for="Domingo">D</label>
           </div>
         </div>
         <div class="d-flex justify-content-between align-items-center mb-3" style="width:100%">
           <div style="width:100%; margin-right:5px">
             <label for="horaInicio" class="form-label">Hora de inicio</label>
-            <input id="horaInicio" type="time" class="form-control" placeholder="Hora inicio" aria-label="Hora inicio" />
+            <input id="horaInicio" type="time" value="{{registro.hora_inicial}}" class="form-control" placeholder="Hora inicio" aria-label="Hora inicio" />
           </div>
           <div style="width:100%; margin-left:5px">
             <label for="horaFinalizacion" class="form-label">Hora de finalizacion</label>
-            <input id="horaFinalizacion" type="time" class="form-control" placeholder="Hora final"
+            <input id="horaFinalizacion" type="time" value="{{registro.hora_final}}" class="form-control" placeholder="Hora final"
               aria-label="Hora final" />
           </div>
         </div>
         <select class="form-select mb-3" aria-label="Default select example" id="docente">
-          <option selected>Seleccionar docente</option>
           {%for i in docentes%}
           <option value="{{i.id}}">{{i.nombres}} {{i.apellido_paterno}}</option>
           {%endfor%}
         </select>
         <select class="form-select mb-3" aria-label="Default select example" id="curso">
-          <option selected>Seleccionar curso</option>
           {%for i in cursos%}
           <option value="{{i.codigo}}">{{i.nombre}} {{i.ciclo}}</option>
           {%endfor%}
         </select>
         
         <button type="button" class="btn btn-primary" style="width: 210px" id="async">
-          Crear
+          Actualizar
         </button>
       </div>
     </div>
@@ -130,7 +132,7 @@
     
     
     
-        fetch('/grupo/crear', {
+        fetch('/grupo/actualizar', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -145,24 +147,6 @@
           .then(
             data => {
               alert(data.mensaje);
-              if (data.respuesta == "Exitosa") {
-                nombre.value = "";
-                codigo.value = "";
-                horaInicio.value = "";
-                horaFinalizacion.value = "";
-                fechaInicio.value = "";
-                fechaFinalizacion.value = "";
-                docente.value = "";
-                curso.value = "";
-    
-                Lunes.checked = false;
-                Martes.checked = false;
-                Miercoles.checked = false;
-                Jueves.checked = false;
-                Viernes.checked = false;
-                Sabado.checked = false;
-                Domingo.checked = false;
-              }
             }
           )
     
@@ -170,6 +154,9 @@
             //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
           })
       })
+
+      document.getElementById("docente").value = "{{registro.docente}}";
+      document.getElementById("curso").value = "{{registro.curso}}";
     </script>
     {%endblock%}
     </div>
