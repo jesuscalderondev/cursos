@@ -155,7 +155,7 @@ def filtrarDocente():
             }
         
         respuesta = json_docentes
-    return respuesta
+    return jsonify(respuesta = "Exitosa", json = json_docentes)
 
 @apis.route('/filtrar_curso')
 def filtrarCurso():
@@ -175,7 +175,7 @@ def filtrarCurso():
             }
         
         respuesta = json_cursos
-    return respuesta
+    return jsonify(respuesta = "Exitosa", json=json_cursos)
 
 @apis.route('/filtrar_grupo', methods=['POST'])
 def filtrarGrupo():
