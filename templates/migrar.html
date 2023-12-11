@@ -1,15 +1,30 @@
-{% extends 'template.html'%} {%block titulo%}Crear Docente{%endblock%} {%block
-cuerpo%}
+{% extends 'template.html'%} {%block titulo%}Migrar{%endblock%} {%block cuerpo%}
 
-<form action="/migrar" class="" enctype="multipart/form-data" method="POST">
-  <div id="result-image" style="width: 400px; height: 300px; border-radius: 5px"
-  class="d-flex justify-content-center align-items-center flex-column border border-primary">
+<form
+  action="/migrar"
+  class="col-md-12 d-flex justify-content-center align-items-center flex-column"
+  style="height: calc(100vh - 56px); margin-top: 56px"
+  enctype="multipart/form-data"
+  method="POST"
+>
+  <div
+    id="result-image"
+    style="border-radius: 5px; width: 400px; height: 300px; cursor: pointer"
+    class="d-flex justify-content-center align-items-center flex-column border border-primary"
+  >
     <input
       type="file"
       name="archivo"
       id="image"
-      style="display: none;"
+      style="display: none"
+      accept=".xlsx, .xls"
     />
+    <p>seleccione o arrastre y suelte un archivo de excel</p>
+    <div
+      id="files"
+      class="d-flex justify-content-center align-items-center"
+      style="width: 380px; overflow: hidden"
+    ></div>
   </div>
 
   <button type="submit" class="btn btn-primary mt-3" style="width: 210px">
@@ -18,44 +33,54 @@ cuerpo%}
 </form>
 
 <script>
-  const $fileInput = document.getElementById('image');
-  const $dropZone = document.getElementById('result-image');
+  const fles = document.getElementById("files");
+  function chargeHandler(file) {
+    // Evitar el comportamiendo por defecto (Evitar que el fichero se abra/ejecute)
+    console.log("... file.name = " + file.name);
+    fles.innerHTML =
+      "<p class='m-0' style='user-select:none;'>" +
+      file.name +
+      " (archivo cargado)</p>";
+  }
+  const $fileInput = document.getElementById("image");
+  const $dropZone = document.getElementById("result-image");
 
-  $dropZone.addEventListener('click', () => $fileInput.click())
+  $dropZone.addEventListener("click", () => $fileInput.click());
 
-  $dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault()
+  $dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
 
-    $dropZone.classList.add('form-file__result--active')
-  })
+    $dropZone.classList.add("form-file__result--active");
+  });
 
-  $dropZone.addEventListener('dragleave', (e) => {
-    e.preventDefault()
+  $dropZone.addEventListener("dragleave", (e) => {
+    e.preventDefault();
 
-    $dropZone.classList.remove('form-file__result--active')
-  })
+    $dropZone.classList.remove("form-file__result--active");
+  });
 
   const uploadImage = (file) => {
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file);
-  }
+    chargeHandler(file);
+  };
 
-  $dropZone.addEventListener('drop', (e) => {
-    e.preventDefault()
+  $dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
 
     /* console.log(e.dataTransfer) */
 
-    $fileInput.files = e.dataTransfer.files
-    const file = $fileInput.files[0]
+    $fileInput.files = e.dataTransfer.files;
+    const file = $fileInput.files[0];
 
-    uploadImage(file)
-  })
+    uploadImage(file);
+  });
 
-  $fileInput.addEventListener('change', (e) => {
+  $fileInput.addEventListener("change", (e) => {
     /* console.log(e.target.files[0]) */
-    const file = e.target.files[0]
+    const file = e.target.files[0];
 
-    uploadImage(file)
-  })
+    uploadImage(file);
+  });
 </script>
 {%endblock%}
