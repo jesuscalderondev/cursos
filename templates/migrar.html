@@ -1,0 +1,74 @@
+{% extends 'template.html'%} {%block titulo%}Crear Docente{%endblock%} {%block
+cuerpo%}
+<div
+  class="col-md-12 d-flex justify-content-center align-items-center p-5 flex-column"
+  style="height: 100vh"
+>
+  <form
+    action="/migrar"
+    method="POST"
+    id="drop_zone"
+    ondrop="dropHandler(event);"
+    ondragover="dragOverHandler(event);"
+    style="width: 400px; height: 300px; border-radius: 5px"
+    class="d-flex justify-content-center align-items-center flex-column border border-primary"
+  >
+    <p class="mb-4">Arrastra y suelta un archivo a esta zona</p>
+    <label
+      class="custom-file-upload"
+      style="
+        border: 1px solid #ccc;
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+      "
+    >
+      <input
+        type="file"
+        id="uploads"
+        onChange="charge(event);"
+        onCancel="dragOverHandler(event);"
+        style="display: none"
+        name="archivo"
+      />
+      Cargar archivo
+    </label>
+    <div
+      id="files"
+      class="d-flex justify-content-center align-items-center mt-4"
+      style="width: 300px; overflow: hidden"
+    ></div>
+  </div>
+  <button
+    type="submit"
+    class="btn btn-primary mt-3"
+    style="width: 210px"
+  >
+    Enviar
+  </button>
+</form>
+<script>
+  fles = document.getElementById("files");
+  disparador = document.getElementById("uploads");
+  function dropHandler(ev) {
+    ev.preventDefault();
+    chargeHandler(ev.dataTransfer.items[0].getAsFile());
+    disparador.files[0] = ev.dataTransfer.items[0].getAsFile();
+  }
+  function charge(ev) {
+    ev.preventDefault();
+    chargeHandler(ev.target.files[0]);
+  }
+  function dragOverHandler(ev) {
+    console.log("File(s) in drop zone");
+
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
+  }
+  function chargeHandler(file) {
+    // Evitar el comportamiendo por defecto (Evitar que el fichero se abra/ejecute)
+    console.log("... file.name = " + file.name);
+    fles.innerHTML = "<p class='m-0'>" + file.name + "</p>";
+  }
+</script>
+{%endblock%}
