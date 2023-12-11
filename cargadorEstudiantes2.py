@@ -3,6 +3,7 @@ import pandas as pd
 from tkinter import filedialog, messagebox
 from datetime import *
 from datetime import date, datetime
+from random import randint
 class Cargador:
     
     def __init__(self, archivo):
@@ -49,7 +50,7 @@ class Cargador:
                 session.add(curso)
             
             if fila['GRUPO'] not in grupos_creados:
-                grupo = Grupo("2024-01-01", "2024-06-01", "08:00", "10:00", 1, fila['GRUPO'], cursos_creados, "Lunes, Martes, Viernes, ", f"Grupo {index}")
+                grupo = Grupo("2023-01-01", "2024-06-01", "08:00", "10:00", randint(1, 9), fila['GRUPO'], cursos_creados, "Lunes, Martes, Viernes, ", f"Grupo {index}")
                 grupos_creados.append(fila['GRUPO'])
                 session.add(grupo)
                 print(grupo.curso)

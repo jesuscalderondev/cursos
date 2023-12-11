@@ -17,13 +17,18 @@ def index():
                 rol = session.get(Usuario, administrador.usuario)
                 return renderizarTemplate('administrador.html')
             rol = session.get(Usuario, docente.usuario)
-        return renderizarTemplate('docente.html')
+        if session.query(AsistenciaDocente).filter(AsistenciaDocente.fecha == datetime.now().date(), AsistenciaDocente.docente == docente.id).first() == None:
+            asistencia = AsistenciaDocente(docente.id)
+            session.add(asistencia)
+            session.commit()
+        grupos = session.query(Grupo).filter(Grupo.docente == docente.id, and_(Grupo.fecha_inicial <= datetime.now().date(), Grupo.fecha_final >= datetime.now().date())).all()
+        return renderizarLista('docente.html', grupos, None)
     return render_template('index.html')
 
 @app.route('/cerrar_sesion')
 def cerrarSesion():
     if validarSesion():
-        nube.pop('llave_ingreso')
+        nube["llave_ingreso"].pop()
     return redirect("/")
 
 @app.route('/inicio_sesion', methods = ['POST'])
@@ -332,6 +337,42 @@ def enviarDatosEstudiantes():
             else:
                 json['cursos'].append(curso.nombre)
                 json['estudiantes'].append(1)
+    print(json)
+    return jsonify(datos = json, respuesta = "Exitosa")
+
+@apis.route('/obtener_promedio_asistencias')
+def enviarDatosDocente():
+    if validarSesion():
+        
+        meses_lista = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+        docente = session.query(Docente).filter(Docente.usuario == llaveAcceso()).first()
+        grupos = session.query(Grupo).filter(Grupo.docente == docente.id).all()
+        json = {'grupos' : [], 'promedios' : [], 'meses' : [], 'mis_asistencias': []}
+        print(grupos)
+        for i in grupos:
+            asistencias = session.query(AsistenciaEstudiante).filter(AsistenciaEstudiante.grupo == i.codigo, AsistenciaEstudiante.asiste == True, and_(AsistenciaEstudiante.fecha >= i.fecha_inicial, AsistenciaEstudiante.fecha <= i.fecha_final)).all()
+            suma = 0
+            meses = []
+            for asistencia in asistencias:
+                suma += 1
+                if asistencia.fecha.month not in meses:
+                    meses.append(asistencia.fecha.month)
+            json["grupos"].append(i.nombre)
+            try:
+                prom = round(suma/len(meses))
+            except:
+                prom = 0
+            json['promedios'].append(prom)
+        for i in meses_lista:
+            mes = meses_lista.index(i)+1
+            if mes < 10:
+                mes = f'0{mes}'
+            print(f"%{datetime.now().date().year}-{mes}%")
+            mis_asistencias = session.query(AsistenciaDocente).filter(and_(AsistenciaDocente.fecha.like(f"%{datetime.now().date().year}-{mes}%"))).all()
+            if i not in json["meses"]:
+                json["meses"].append(i)
+                json["mis_asistencias"].append(len(mis_asistencias))
+            
     print(json)
     return jsonify(datos = json, respuesta = "Exitosa")
 

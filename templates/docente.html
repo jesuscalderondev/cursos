@@ -1,93 +1,86 @@
-{% extends 'template.html'%} {%block titulo%} Administrador {%endblock%} {%block
-    cuerpo%}
-        <div class="d-flex justify-content-center align-items-center"
-        style="height: calc(100vh - 56px);padding:10px;margin-top:56px;box-sizing:border-box;overflow:hidden">
-          <div
-        class=" col-md-6 d-flex justify-content-center align-items-center flex-column"
-        style="height:100%"
-        >
-            <div style="width:100%;height:50%">
-              <canvas id="chart1"></canvas>
-            </div>
-            <div style="width:100%;height:50%">
-              <canvas id="chart2"></canvas>
-            </div>
-        </div>
-        <div
-        style="height: 100%;overflow-y: scroll;overflow-x: hidden; padding:20px 60px;display:grid;grid-template-columns:1fr 1fr;"
-        class=" col-md-6">
-        <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
-            <div class="card-header">Header</div>
-            <div class="card-body">
-              <h5 class="card-title">Primary card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-          <div class="card text-bg-secondary mb-3" style="max-width: 18rem;">
-            <div class="card-header">Header</div>
-            <div class="card-body">
-              <h5 class="card-title">Secondary card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-          <div class="card text-bg-success mb-3" style="max-width: 18rem;">
-            <div class="card-header">Header</div>
-            <div class="card-body">
-              <h5 class="card-title">Success card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-          <div class="card text-bg-danger mb-3" style="max-width: 18rem;">
-            <div class="card-header">Header</div>
-            <div class="card-body">
-              <h5 class="card-title">Danger card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-          <div class="card text-bg-warning mb-3" style="max-width: 18rem;">
-            <div class="card-header">Header</div>
-            <div class="card-body">
-              <h5 class="card-title">Warning card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-          <div class="card text-bg-info mb-3" style="max-width: 18rem;">
-            <div class="card-header">Header</div>
-            <div class="card-body">
-              <h5 class="card-title">Info card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-          <div class="card text-bg-light mb-3" style="max-width: 18rem;">
-            <div class="card-header">Header</div>
-            <div class="card-body">
-              <h5 class="card-title">Light card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-          <div class="card text-bg-dark" style="max-width: 18rem;">
-            <div class="card-header">Header</div>
-            <div class="card-body">
-              <h5 class="card-title">Dark card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-        </div>
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-          const ctx1 = document.getElementById('chart1');
-          const ctx2 = document.getElementById('chart2');
+{% extends 'template.html'%} {%block titulo%} Docente {%endblock%} {%block
+cuerpo%}
+<div class="d-flex justify-content-center align-items-center"
+  style="height: calc(100vh - 56px);padding:10px;margin-top:56px;box-sizing:border-box;overflow:hidden">
+  <div class=" col-md-6 d-flex justify-content-center align-items-center flex-column" style="height:100%">
+    <div style="width:100%;height:50%">
+      <canvas id="chart1"></canvas>
+    </div>
+    <div style="width:100%;height:50%">
+      <canvas id="chart2"></canvas>
+    </div>
+  </div>
+  <div
+    style="height: 100%;overflow-y: scroll;overflow-x: hidden; padding:20px 60px;display:grid;grid-template-columns:1fr 1fr;"
+    class=" col-md-6">
+
+    {%for i in lista%}
+    <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
+      <div class="card-header">{{i.codigo}}</div>
+      <div class="card-body">
+        <h5 class="card-title">{{i.nombre}}</h5>
+        <p class="card-text">Este curso está dicponible desde {{i.fecha_inicial}} hasta {{i.fecha_final}}</p>
+      </div>
+    </div>
+    {%endfor%}
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+  const back = [];
+  const bord = [];
+  const back2 = [];
+
+  for (let i = 0; i < 50; i++) {
+    const hue = Math.floor(Math.random() * 360);
+    const saturation = Math.floor(Math.random() * 100) + 50;
+    const lightness = Math.floor(Math.random() * 100) + 50;
+
+    const backgroundColor = `rgba(${hue}, ${saturation}, ${lightness}, 0.2)`;
+    const backgroundColor2 = `rgba(${hue}, ${saturation}, ${lightness}, 1)`;
+    const borderColor = `rgb(${hue}, ${saturation}, ${lightness})`;
+
+    back.push(backgroundColor);
+    back2.push(backgroundColor2);
+    bord.push(borderColor);
+  }
+
+  const ctx1 = document.getElementById('chart1');
+  const ctx2 = document.getElementById('chart2');
+
+  fetch('/api/obtener_promedio_asistencias', {
+    method: 'GET',
+  })
+
+    .then(
+      response => response.json()
+    )
+
+    .then(
+      datos => {
+        console.log(datos);
+        if (datos.respuesta == "Exitosa") {
+
+          /* document.getElementById("cantidadEstudiantes").innerHTML = datos.datos.totalEstudiantes;
+          document.getElementById("cantidadDocentes").innerHTML = datos.datos.totalDocentes;
+          document.getElementById("cantidadGrupos").innerHTML = datos.datos.totalGrupos;
+          document.getElementById("cantidadCursos").innerHTML = datos.datos.totalCursos;
+ */
           new Chart(ctx1, {
             type: 'line',
             data: {
-              labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+              labels: datos.datos.meses,
               datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                borderWidth: 1
+                label: 'Mis asistecnias por mes',
+                data: datos.datos.mis_asistencias,
+                borderWidth: 1,
+                borderRadius: 0 ,
+                backgroundColor: back,
+                borderColor: bord
               }]
             },
+
             options: {
               scales: {
                 y: {
@@ -96,14 +89,16 @@
               }
             }
           });
+
           new Chart(ctx2, {
             type: 'bar',
             data: {
-              labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+              labels: datos.datos.grupos,
               datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                borderWidth: 1
+                label: 'Promedio de asistencia por grupo',
+                data: datos.datos.promedios,
+                borderWidth: 1,
+                backgroundColor: back2
               }]
             },
             options: {
@@ -114,7 +109,16 @@
               }
             }
           });
-        </script>
-    {%endblock%}
-    </div>
-    
+        }
+        else {
+          //Debes poner una notificación y mostrar el mensaje
+        }
+      }
+    )
+
+    .catch(error => {
+      //debes poner una notificación e indicar que se cayó la conexión con el servidor, que revise su conexión a internet
+    })
+</script>
+{%endblock%}
+</div>

@@ -120,12 +120,10 @@ class AsistenciaDocente(Base):
     id = Column(Integer, primary_key=True)
     fecha = Column(Date, nullable = False)
     docente = Column(Integer, ForeignKey('docentes.id'), nullable=False)
-    grupo = Column(String, ForeignKey('grupos.codigo'), nullable = False)
     
-    def __init__(self, docente, fecha, grupo):
-        self.fecha = fecha
+    def __init__(self, docente):
+        self.fecha = datetime.now().date()
         self.docente = docente
-        self.grupo = grupo
         
         
 class AsistenciaEstudiante(Base):
