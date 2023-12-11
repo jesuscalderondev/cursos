@@ -1,12 +1,12 @@
 {% extends 'template.html'%} {%block titulo%}Crear Docente{%endblock%} {%block
 cuerpo%}
-<div
+<form
+  action="/migrar"
+  method="POST"
   class="col-md-12 d-flex justify-content-center align-items-center p-5 flex-column"
   style="height: 100vh"
 >
-  <form
-    action="/migrar"
-    method="POST"
+  <div
     id="drop_zone"
     ondrop="dropHandler(event);"
     ondragover="dragOverHandler(event);"
@@ -39,11 +39,7 @@ cuerpo%}
       style="width: 300px; overflow: hidden"
     ></div>
   </div>
-  <button
-    type="submit"
-    class="btn btn-primary mt-3"
-    style="width: 210px"
-  >
+  <button type="submit" class="btn btn-primary mt-3" style="width: 210px">
     Enviar
   </button>
 </form>
