@@ -28,7 +28,7 @@ def index():
 @app.route('/cerrar_sesion')
 def cerrarSesion():
     if validarSesion():
-        nube["llave_ingreso"].pop()
+        nube.pop('llave_ingreso')
     return redirect("/")
 
 @app.route('/inicio_sesion', methods = ['POST'])
@@ -189,18 +189,18 @@ def listarDocentes():
 @docentes.route('/crear', methods=['POST', 'GET'])
 def regsitrarDocente():
     if validarSesion():
-        print(request.method)
         if request.method == 'POST':
             formulario = request.get_json()
             try:
                 print("SIIIU")
-                crearDocente(formulario)
+                clave = crearDocente(formulario)
                 operacion = "Exitosa"
                 mensaje = "Docente registrado de manera exitosa"
             except:
                 operacion = "Fallida"
                 mensaje = "Correo electronico usado con anterioridad"
-            return jsonify(respuesta = operacion, mensaje = mensaje)
+                clave = "sin clave"
+            return jsonify(respuesta = operacion, mensaje = mensaje, clave = clave)
         else:
             rol = session.get(Usuario, llaveAcceso())
             return renderizarTemplate("crearDocente.html")

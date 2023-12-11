@@ -48,9 +48,9 @@ def crearDocente(form):
     fechaNacimiento = form['fechaNacimiento']
     email = form['email']
     
-    clave = generarClave(nombres, apellidoPaterno)
-    print(clave)
-    clave = codificar(clave)
+    clave2 = generarClave(nombres, apellidoPaterno)
+    
+    clave = codificar(clave2)
     with Session() as session:
         usuario = Usuario(email, clave, 'Docente')
         session.add(usuario)
@@ -58,6 +58,7 @@ def crearDocente(form):
         docente = Docente(nombres, apellidoPaterno, apellidoMaterno, fechaNacimiento, usuario.id)
         session.add(docente)
         session.commit()
+        return clave2
         
 def actualizarDocente(form):
     nombres = form['nombres']

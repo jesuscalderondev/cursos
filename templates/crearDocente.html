@@ -62,11 +62,13 @@
             console.log(data);
             alert(data.mensaje);
             if (data.respuesta == "Exitosa") {
+              alert("Esta e la clave de acceso para el docente: "+data.clave);
               email.value = "";
               nombres.value = "";
               apellidoMaterno.value = "";
               apellidoPaterno.value = "";
               fechaNacimiento.value = "";
+              
               //form.reset();
             }
           }
