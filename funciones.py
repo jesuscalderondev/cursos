@@ -187,9 +187,9 @@ def renderizarTemplate(plantilla):
     rol = session.get(Usuario, llaveAcceso())
     return render_template(plantilla, rol = rol, usuario = obtenerRol(rol))
 
-def renderizarLista(plantilla:str, lista:list):
+def renderizarLista(plantilla:str, lista:list, extra):
     rol = session.get(Usuario, llaveAcceso())
-    return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), lista = lista)
+    return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), lista = lista, extra = extra)
 
 def renderizarListas(plantilla:str, lista1:list, lista2:list):
     rol = session.get(Usuario, llaveAcceso())

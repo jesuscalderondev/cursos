@@ -134,8 +134,10 @@ class AsistenciaEstudiante(Base):
     fecha = Column(Date, nullable = False)
     estudiante = Column(Integer, ForeignKey('estudiantes.codigo'), nullable=False)
     grupo = Column(String, ForeignKey('grupos.codigo'), nullable = False)
+    asiste = Column(Boolean, nullable=False)
     
-    def __init__(self, estudiante, fecha, grupo):
-        self.fecha = fecha
+    def __init__(self, estudiante, grupo, asiste):
+        self.fecha = datetime.now().date()
         self.estudiante = estudiante
         self.grupo = grupo
+        self.asiste = asiste

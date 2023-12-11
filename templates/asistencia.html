@@ -1,0 +1,49 @@
+{% extends 'template.html'%} {%block titulo%} Asistencia {%endblock%} {%block
+    cuerpo%}
+
+<div
+  style="height: 100vh"
+  class="d-flex justify-content-center align-items-center flex-column"
+>
+  <div
+    style="width: 100%"
+    class="d-flex justify-content-between align-items-center"
+  >
+    <p class="fs-2">Asistencia De Estudiantes</p>
+    
+  </div>
+  <table class="table">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Código</th>
+        <th scope="col">Nombre completo</th>
+        <th scope="col">Dia de pago</th>
+        <th scope="col">Grupo</th>
+        <th scope="col">Curso</th>
+        <th scope="col">Asiste</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in lista%}
+      <tr>
+        <th scope="row">{{i.codigo}}</th>
+        <td>{{i.nombre}}</td>
+        <td>{{i.diaDePago}}</td>
+        <td>{{i.grupo}}</td>
+        <td>{{i.curso}}</td>
+        <td>
+            <a class="iconos" href="/api/confirmar_asistencia/{{i.codigo}}">
+                <i class="fa-regular fa-calendar-check" style="color: #08f"></i>
+            </a>
+            <a class="iconos" href="/api/confirmar_inasistencia/{{i.codigo}}">
+                <i class="fa-regular fa-calendar-xmark" style="color: #08f"></i>
+            </a>
+          
+          
+        </td>
+      </tr>
+      {%endfor%}
+    </tbody>
+  </table>
+  {%endblock%}
+</div>

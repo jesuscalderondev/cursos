@@ -111,8 +111,7 @@ def registrarCurso():
 def listarCursos():
     if validarSesion():
         lista = session.query(Curso).all()
-        print(lista)
-        return renderizarLista("listarCursos.html", lista)
+        return renderizarLista("listarCursos.html", lista,  None)
     return redirect("/")
 
 @cursos.route('/editar/<int:id>')
@@ -143,7 +142,7 @@ def listarGruposDeUnCurso(id):
                 'dias' : i.dias_de_clases[:-2],
                 'codigo' : i.codigo
             })
-        return renderizarLista("listarGrupos.html", lista = json)
+        return renderizarLista("listarGrupos.html", json, None)
     return redirect("/")
 
 @cursos.route('/eliminar/<int:id>')
@@ -219,6 +218,26 @@ def editarDocente():
         operacion = "Exitosa"
         mensaje = "Docente actualizado exitosamanete"
     return jsonify(respuesta = operacion, mensaje = mensaje)
+
+@docentes.route('/mis_grupos')
+def listarMisGrupos():
+    if validarSesion() and session.get(Usuario, llaveAcceso()).rol == "Docente":
+        docente = session.query(Docente).filter(Docente.usuario == llaveAcceso()).first()
+        grupos = session.query(Grupo).filter(Grupo.docente == docente.id).all()
+        json = []
+        docente = f'{docente.nombres} {docente.apellido_paterno}'
+        for i in grupos:
+            curso = session.get(Curso, i.curso)
+            json.append({
+                'docente' : docente,
+                'curso' : curso.nombre,
+                'nombre' : i.nombre,
+                'horario' : f'{i.hora_inicial} a {i.hora_final}',
+                'dias' : i.dias_de_clases[:-2],
+                'codigo' : i.codigo
+            })
+        return renderizarLista("listarGrupos.html", json, None)
+    return redirect("/")
 
 app.register_blueprint(docentes)
 
@@ -332,6 +351,32 @@ def firmarAsistenciaEstudiante(id, grupo):
         session.commit()
     return redirect('/')
 
+@apis.route('/confirmar_asistencia/<int:codigo>')
+def confirmarAsistencia(codigo):
+    if validarSesion():
+        try:
+            estudiante = session.get(Estudiante, codigo)
+            asistencia = AsistenciaEstudiante(codigo, estudiante.grupo, True)
+            session.add(asistencia)
+            session.commit()
+            return redirect(f"/grupo/{estudiante.grupo}/asistencia")
+        except:
+            return "Error este estudioante ya tiene asistencia"
+    return redirect("/")
+
+@apis.route('/confirmar_inasistencia/<int:codigo>')
+def confirmarInasistencia(codigo):
+    if validarSesion():
+        try:
+            estudiante = session.get(Estudiante, codigo)
+            asistencia = AsistenciaEstudiante(codigo, estudiante.grupo, False)
+            session.add(asistencia)
+            session.commit()
+            return redirect(f"/grupo/{estudiante.grupo}/asistencia")
+        except:
+            return "Error este estudioante ya tiene asistencia"
+    return redirect("/")
+
 app.register_blueprint(apis)
 
 
@@ -394,7 +439,7 @@ def listarGrupos():
                 'dias' : i.dias_de_clases[:-2],
                 'codigo' : i.codigo
             })
-        return renderizarLista("listarGrupos.html", lista = json)
+        return renderizarLista("listarGrupos.html", json, None)
     return redirect("/")
 
 @grupos.route('/eliminar/<string:codigo>', methods = ['GET'])
@@ -426,11 +471,10 @@ def editarGrupoFormulario(codigo):
 def listarEstudiantesDeUnGrupo(codigo):
     if validarSesion():
         estudiantes = session.query(Estudiante).filter(Estudiante.grupo == codigo).all()
-        
         json = []
+        grupo = session.get(Grupo, codigo)
+        curso = session.get(Curso, grupo.curso)
         for i in estudiantes:
-            grupo = session.get(Grupo, i.grupo)
-            curso = session.get(Curso, grupo.curso)
             json.append({
                 'grupo' : grupo.nombre,
                 'curso' : curso.nombre,
@@ -438,7 +482,25 @@ def listarEstudiantesDeUnGrupo(codigo):
                 'codigo' : i.codigo,
                 'diaDePago' : i.dia_de_pago
             })
-    return renderizarLista("listarEstudiantes.html", json)
+    return renderizarLista("listarEstudiantes.html", json, grupo)
+
+@grupos.route('/<string:codigo>/asistencia')
+def asistenciaFormulario(codigo):
+    if validarSesion():
+        estudiantes = session.query(Estudiante).filter(Estudiante.grupo == codigo).all()
+        json = []
+        grupo = session.get(Grupo, codigo)
+        curso = session.get(Curso, grupo.curso)
+        for i in estudiantes:
+            if session.query(AsistenciaEstudiante).filter(AsistenciaEstudiante.fecha == datetime.now().date(), AsistenciaEstudiante.estudiante == i.codigo, AsistenciaEstudiante.grupo == codigo).first() == None:
+                json.append({
+                    'grupo' : grupo.nombre,
+                    'curso' : curso.nombre,
+                    'nombre' : i.nombre,
+                    'codigo' : i.codigo,
+                    'diaDePago' : i.dia_de_pago
+                })
+    return renderizarLista("asistencia.html", json, grupo)
 
 app.register_blueprint(grupos)
 
