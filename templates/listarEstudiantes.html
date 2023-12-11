@@ -30,42 +30,29 @@ cuerpo%}
   <table class="table">
     <thead class="table-dark">
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
-        <th scope="col">Funcionalidades</th>
+        <th scope="col">Código</th>
+        <th scope="col">Nombre completo</th>
+        <th scope="col">Dia de pago</th>
+        <th scope="col">Grupo</th>
+        <th scope="col">Curso</th>
+        <th scope="col">Acciones</th>
       </tr>
     </thead>
     <tbody>
+      {% for i in lista%}
       <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
+        <th scope="row">{{i.codigo}}</th>
+        <td>{{i.nombre}}</td>
+        <td>{{i.diaDePago}}</td>
+        <td>{{i.grupo}}</td>
+        <td>{{i.curso}}</td>
         <td>
           <i class="fa-regular fa-eye" style="color: #08f"></i>
           <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
           <i class="fa-solid fa-trash" style="color: #08f"></i>
         </td>
       </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>
-          <i class="fa-regular fa-eye" style="color: #08f"></i>
-          <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
-          <i class="fa-solid fa-trash" style="color: #08f"></i>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td colspan="2">Larry the Bird</td>
-        <td>
-          <i class="fa-regular fa-eye" style="color: #08f"></i>
-          <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
-          <i class="fa-solid fa-trash" style="color: #08f"></i>
-        </td>
-      </tr>
+      {%endfor%}
     </tbody>
   </table>
   {%endblock%}

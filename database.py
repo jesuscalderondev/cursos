@@ -97,3 +97,45 @@ class Grupo(Base):
         self.curso = curso
         self.dias_de_clases = dias
         self.nombre = nombre
+        
+        
+class Estudiante(Base):
+    __tablename__ = 'estudiantes'
+    codigo = Column(Integer, primary_key=True, autoincrement=False)
+    fecha_creacion = Column(Date, nullable=False)
+    nombre = Column(String(225), nullable=False)
+    dia_de_pago = Column(Date, nullable = True)
+    grupo = Column(String, ForeignKey('grupos.codigo'), nullable=False)
+    
+    
+    def __init__(self, codigo, fechaDeCreacion, nombre, diaDePago, grupo):
+        self.codigo = codigo
+        self.nombre = nombre
+        self.dia_de_pago = diaDePago
+        self.fecha_creacion = fechaDeCreacion
+        self.grupo = grupo
+        
+class AsistenciaDocente(Base):
+    __tablename__ = 'asistencia_de_docentes'
+    id = Column(Integer, primary_key=True)
+    fecha = Column(Date, nullable = False)
+    docente = Column(Integer, ForeignKey('docentes.id'), nullable=False)
+    grupo = Column(String, ForeignKey('grupos.codigo'), nullable = False)
+    
+    def __init__(self, docente, fecha, grupo):
+        self.fecha = fecha
+        self.docente = docente
+        self.grupo = grupo
+        
+        
+class AsistenciaEstudiante(Base):
+    __tablename__ = 'asistencia_de_estudiantes'
+    id = Column(Integer, primary_key=True)
+    fecha = Column(Date, nullable = False)
+    estudiante = Column(Integer, ForeignKey('estudiantes.codigo'), nullable=False)
+    grupo = Column(String, ForeignKey('grupos.codigo'), nullable = False)
+    
+    def __init__(self, estudiante, fecha, grupo):
+        self.fecha = fecha
+        self.estudiante = estudiante
+        self.grupo = grupo

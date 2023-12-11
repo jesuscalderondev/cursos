@@ -56,17 +56,20 @@ def registrarAdministrador():
         return render_template("registrarAdministrador.html")
 
 
-""" 
-@app.route('/subir_estudiantes', methods = ['POST'])
+@app.route('/migrar', methods = ['POST'])
 def subirEstudiantes():
+    respuesta = "Sin acceso a esta acción"
     if validarSesion():
         archivo = request.files["archivo"]
-        
-        if ".xlsx" in archivo.filename:
-            archivo.save("/static/listaEstudiantes.xlsx")
-
-    return  """
-        
+        if ".xlsx" in archivo.filename or ".xls" in archivo.filename:
+            try:
+                Cargador(archivo)
+                respuesta = "Los datos fueron cargados exitosamente a la base de datos "
+            except:
+                respuesta = "Error, verifique que los datos cumplan con los estandares y no hayan campos vacíos"
+        else:
+            respuesta = "El archivo no es un excel por favor verifique que el archivo sea correcto"  
+    return jsonify(mensaje = respuesta)
 
 #------------------------------------  Cursos ------------------------------------
 cursos = Blueprint("cursos", __name__, url_prefix='/curso')
@@ -97,6 +100,40 @@ def listarCursos():
         print(lista)
         return renderizarLista("listarCursos.html", lista)
     return redirect("/")
+
+@cursos.route('/editar/<int:id>')
+def editarCursoFormulario(id):
+    if validarSesion():
+        curso = session.get(Curso, id)
+        return renderizarEditCurso("editarCurso.html", curso)
+    return redirect("/")
+
+@cursos.route('/ver/<int:id>')
+def listarGruposDeUnCurso(id):
+    if validarSesion():
+        grupos = session.query(Grupo).filter(Grupo.curso == id).all()
+        return renderizarLista("listarGrupos.html", grupos)
+    return redirect("/")
+
+@cursos.route('/eliminar/<int:id>')
+def eliminarCurso(id):
+    if validarSesion():
+        curso = session.get(Curso, id)
+        session.delete(curso)
+        session.commit()
+        return redirect("/curso/lista")
+    return redirect("/")
+
+@cursos.route('/actualizar', methods=["POST"])
+def editarCurso():
+    operacion = "Fallida"
+    mensaje = "Sin modificaciones"
+    if validarSesion():
+        formulario = request.get_json()
+        actualizarCurso(formulario)
+        operacion = "Exitosa"
+        mensaje = "Curso actualizado exitosamanete"
+    return jsonify(respuesta = operacion, mensaje = mensaje)
 
 app.register_blueprint(cursos)
 #----------------------------------- Docentes ------------------------------------
@@ -229,6 +266,40 @@ def filtrarGrupo():
             }
         return jsonify(respuesta = "Exitosa", json = json)
     return jsonify(respuesta = "Fallida")
+
+@apis.route('/obtener_registros_cursos')
+def enviarDatosEstudiantes():
+    if validarSesion():
+        alumnos = session.query(Estudiante).all()
+        
+        json = {'cursos' : [], 'estudiantes' : [], 'totalEstudiantes' : len(alumnos), 'totalDocentes' : obtenerCantidad(Docente), 'totalCursos' : obtenerCantidad(Curso), 'totalGrupos' : obtenerCantidad(Grupo)}
+        for i in alumnos:
+            grupo = session.get(Grupo, i.grupo)
+            curso = session.get(Curso, grupo.curso)
+            if curso.nombre in json['cursos']:
+                json['estudiantes'][json['cursos'].index(curso.nombre)] += 1
+            else:
+                json['cursos'].append(curso.nombre)
+                json['estudiantes'].append(1)
+    print(json)
+    return jsonify(datos = json, respuesta = "Exitosa")
+
+@apis.route('/firmar_asistencia/docente/<int:id>/<int:grupo>')
+def firmarAsistenciaDocente(id, grupo):
+    if validarSesion():
+        asistencia = AsistenciaDocente(id, datetime.now().date(), grupo)
+        session.add(asistencia)
+        session.commit()
+    return redirect('/')
+
+@apis.route('/firmar_asistencia/estudiante/<int:id>/<int:grupo>')
+def firmarAsistenciaEstudiante(id, grupo):
+    if validarSesion():
+        asistencia = AsistenciaEstudiante(id, datetime.now().date(), grupo)
+        session.add(asistencia)
+        session.commit()
+    return redirect('/')
+
 app.register_blueprint(apis)
 
 
@@ -318,6 +389,24 @@ def editarGrupoFormulario(codigo):
             mensaje = "El grupo no existe"
     return jsonify(mensaje = mensaje)
 
+        
+@grupos.route('/ver/<string:codigo>')
+def listarEstudiantesDeUnGrupo(codigo):
+    if validarSesion():
+        estudiantes = session.query(Estudiante).filter(Estudiante.grupo == codigo).all()
+        
+        json = []
+        for i in estudiantes:
+            grupo = session.get(Grupo, i.grupo)
+            curso = session.get(Curso, grupo.curso)
+            json.append({
+                'grupo' : grupo.nombre,
+                'curso' : curso.nombre,
+                'nombre' : i.nombre,
+                'codigo' : i.codigo,
+                'diaDePago' : i.dia_de_pago
+            })
+    return renderizarLista("listarEstudiantes.html", json)
 
 app.register_blueprint(grupos)
 

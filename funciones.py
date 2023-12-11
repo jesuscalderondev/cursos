@@ -105,7 +105,22 @@ def crearCurso(form):
         curso = Curso(duracion, ciclo, nombre)
         session.add(curso)
         session.commit()
+
+def actualizarCurso(form):
+    id = form["id"]
+    nombre = form["nombre"]
+    ciclo = form["ciclo"]
+    duracion = form["duracion"]
     
+    curso = session.get(Curso, id)
+    
+    curso.nombre = nombre
+    curso.ciclo = ciclo
+    curso.duracion = duracion
+    
+    session.add(curso)
+    session.commit()    
+
 def crearGrupo(form):
     with Session() as session:
         nombre = form["nombre"]
@@ -126,7 +141,11 @@ def crearGrupo(form):
         grupo = Grupo(fechaInicio, fechaFinalizacion, horaInicio, horaFinalizacion, docente, codigo, curso, dias, nombre)
         session.add(grupo)
         session.commit()
-    
+
+def obtenerCantidad(parametro:object):
+    with Session() as session:
+        return len(session.query(parametro).all())
+
 def actualizarGrupo(form):
     with Session() as session:
         nombre = form["nombre"]
@@ -190,3 +209,7 @@ def renderizarEditDocente(plantilla, objeto):
     rol = session.get(Usuario, llaveAcceso())
     email = session.get(Usuario, objeto.usuario).email
     return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), registro = objeto, email = email)
+
+def renderizarEditCurso(plantilla, objeto):
+    rol = session.get(Usuario, llaveAcceso())
+    return render_template(plantilla, rol = rol, usuario = obtenerRol(rol), registro = objeto)

@@ -21,7 +21,7 @@ cuerpo%}
     var duracion = document.getElementById("duracion");
 
     var formData = new FormData();
-    var jsonData = { nombre: nombre.value, ciclo: ciclo.value, duracion: duracion.value };
+    var jsonData = { nombre: nombre.value, ciclo: ciclo.value, duracion: duracion.value, id : '{{registro.codigo}}'};
 
 
     fetch('/curso/actualizar', {
