@@ -1,142 +1,137 @@
 {% extends 'template.html'%} {%block titulo%} Grupos {%endblock%} {%block
-  cuerpo%}
-  
-  <script>
-    function crear_grupo() {
-      location.replace("/grupo/crear");
-    }
-  
-    function filtrar(filtrado) {
-      var jsonData = { filtro: filtrado.value };
-  
-      fetch("/api/filtrar_grupo", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(jsonData),
-      })
-        .then((response) => response.json())
-  
-        .then((data) => {
-          var tabla = document.querySelector("tbody");
-          var filas = tabla.getElementsByTagName("tr");
-  
-          // Verifica si hay más de una fila (excluye la fila de encabezado)
-          for (var i = filas.length - 1; i >= 0; i--) {
-            tabla.deleteRow(i);
-          }
-  
-          var llaves = Object.keys(data.json);
-          llaves.forEach((grupo) => {
-            var fila = tabla.insertRow();
-            fila.className = "w100";
-            var celda1 = fila.insertCell();
-            var celda2 = fila.insertCell();
-            var celda3 = fila.insertCell();
-            var celda4 = fila.insertCell();
-            var celda5 = fila.insertCell();
-            var celda6 = fila.insertCell();
-            var celda7 = fila.insertCell();
-            celda1.className = "w7";
-            celda2.className = "w14";
-            celda3.className = "w14";
-            celda4.className = "w7";
-            celda5.className = "w16";
-            celda6.className = "w34";
-            celda7.className = "w10";
-  
-            celda1.innerHTML = data["json"][grupo].codigo;
-  
-            celda2.innerHTML = data["json"][grupo].nombre;
-            celda3.innerHTML = data["json"][grupo].docente;
-            celda4.innerHTML = data["json"][grupo].curso;
-            celda5.innerHTML = data["json"][grupo].horario;
-            celda6.innerHTML = data["json"][grupo].dias;
-  
-            celda7.innerHTML =
-              "<a href='/grupo/ver/" +
-              data["json"][grupo].codigo +
-              "' class='iconos'><i class='fa-regular fa-eye' style='color: #08f'></i></a><a href='/grupo/editar/" +
-              data["json"][grupo].codigo +
-              "' class='iconos'><i class='fa-regular fa-pen-to-square' style='color: #08f'></i></a><a href='/grupo/eliminar/" +
-              data["json"][grupo].codigo +
-              "' class='iconos'><i class='fa-solid fa-trash' style='color: #08f'></i></a>";
-          });
+cuerpo%}
+
+<script>
+  function crear_grupo() {
+    location.replace("/grupo/crear");
+  }
+
+  function filtrar(filtrado) {
+    var jsonData = { filtro: filtrado.value };
+
+    fetch("/api/filtrar_grupo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(jsonData),
+    })
+      .then((response) => response.json())
+
+      .then((data) => {
+        var tabla = document.querySelector("tbody");
+        var filas = tabla.getElementsByTagName("tr");
+
+        // Verifica si hay más de una fila (excluye la fila de encabezado)
+        for (var i = filas.length - 1; i >= 0; i--) {
+          tabla.deleteRow(i);
+        }
+
+        var llaves = Object.keys(data.json);
+        llaves.forEach((grupo) => {
+          var fila = tabla.insertRow();
+          fila.className = "w100";
+          var celda1 = fila.insertCell();
+          var celda2 = fila.insertCell();
+          var celda3 = fila.insertCell();
+          var celda4 = fila.insertCell();
+          var celda5 = fila.insertCell();
+          var celda6 = fila.insertCell();
+          var celda7 = fila.insertCell();
+          celda1.className = "w7";
+          celda2.className = "w14";
+          celda3.className = "w14";
+          celda4.className = "w7";
+          celda5.className = "w16";
+          celda6.className = "w34";
+          celda7.className = "w10";
+
+          celda1.innerHTML = data["json"][grupo].codigo;
+
+          celda2.innerHTML = data["json"][grupo].nombre;
+          celda3.innerHTML = data["json"][grupo].docente;
+          celda4.innerHTML = data["json"][grupo].curso;
+          celda5.innerHTML = data["json"][grupo].horario;
+          celda6.innerHTML = data["json"][grupo].dias;
+
+          celda7.innerHTML =
+            "<a href='/grupo/ver/" +
+            data["json"][grupo].codigo +
+            "' class='iconos'><i class='fa-regular fa-eye' style='color: #08f'></i></a><a href='/grupo/editar/" +
+            data["json"][grupo].codigo +
+            "' class='iconos'><i class='fa-regular fa-pen-to-square' style='color: #08f'></i></a><a href='/grupo/eliminar/" +
+            data["json"][grupo].codigo +
+            "' class='iconos'><i class='fa-solid fa-trash' style='color: #08f'></i></a>";
         });
-    }
-  </script>
-  
+      });
+  }
+</script>
+
+<div
+  style="height: 100vh"
+  class="d-flex justify-content-center align-items-center flex-column p-5"
+>
   <div
-    style="height: 100vh"
-    class="d-flex justify-content-center align-items-center flex-column p-5"
+    style="width: 100%"
+    class="d-flex justify-content-between align-items-center"
   >
-    <div
-      style="width: 100%"
-      class="d-flex justify-content-between align-items-center"
-    >
-      <p class="fs-2">Listado De Grupos</p>
-      <div class="d-flex justify-content-center align-items-center">
-        <button
-          type="button"
-          onclick="crear_grupo()"
-          class="btn btn-outline-primary"
-          style="width: 210px"
-        >
-          Crear Grupo
-        </button>
-        <input
-          id="filtrado"
-          oninput="filtrar(this)"
-          type="text"
-          class="form-control mx-2"
-          aria-label="Text input with checkbox"
-        />
-      </div>
-    </div>
-    <table class="table scroll" style="width: 90%; text-align: center">
-      <thead class="table-dark">
-        <tr>
-          <th scope="col" style="width: 5%">Codigo</th>
-          <th scope="col" style="width: 14%">Nombre</th>
-          <th scope="col" style="width: 14%">Docente</th>
-          <th scope="col" style="width: 7%">Curso</th>
-          <th scope="col" style="width: 16%">Hoario</th>
-          <th scope="col" style="width: 34%">Dias</th>
-          <th scope="col" style="width: 10%">Acciones</th>
-        </tr>
-      </thead>
-      <tbody
-        style="
-          height: 100%;
-          max-height: 450px !important;
-          overflow-y: auto;
-        "
+    <p class="fs-2">Listado De Grupos</p>
+    <div class="d-flex justify-content-center align-items-center">
+      <button
+        type="button"
+        onclick="crear_grupo()"
+        class="btn btn-outline-primary"
+        style="width: 210px"
       >
-        {%for i in lista%}
-        <tr style="width: 100%">
-          <td scope="col" style="width: 7%">{{i["codigo"]}}</td>
-          <td scope="col" style="width: 14%">{{i["nombre"]}}</td>
-          <td scope="col" style="width: 14%">{{i["docente"]}}</td>
-          <td scope="col" style="width: 7%">{{i["curso"]}}</td>
-          <td scope="col" style="width: 16%">{{i["horario"]}}</td>
-          <td scope="col" style="width: 34%">{{i["dias"]}}</td>
-          <td style="width: 10%">
-            <a href="/grupo/ver/{{i.codigo}}" class="iconos">
-              <i class="fa-regular fa-eye" style="color: #08f"></i>
-            </a>
-            {%if rol.rol == "Administrador"%}
-            <a href="/grupo/editar/{{i.codigo}}" class="iconos">
-              <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
-            </a>
-            <a href="/grupo/eliminar/{{i.codigo}}" class="iconos">
-              <i class="fa-solid fa-trash" style="color: #08f"></i>
-            </a>
-            {%endif%}
-          </td>
-        </tr>
-        {%endfor%}
-      </tbody>
-    </table>
-    {%endblock%}
+        Crear Grupo
+      </button>
+      <input
+        id="filtrado"
+        oninput="filtrar(this)"
+        type="text"
+        class="form-control mx-2"
+        aria-label="Text input with checkbox"
+        placeholder="filtrar..."
+      />
+    </div>
   </div>
+  <table class="table scroll" style="width: 90%; text-align: center">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col" style="width: 5%">Codigo</th>
+        <th scope="col" style="width: 14%">Nombre</th>
+        <th scope="col" style="width: 14%">Docente</th>
+        <th scope="col" style="width: 7%">Curso</th>
+        <th scope="col" style="width: 16%">Hoario</th>
+        <th scope="col" style="width: 34%">Dias</th>
+        <th scope="col" style="width: 10%">Acciones</th>
+      </tr>
+    </thead>
+    <tbody style="height: 100%; max-height: 450px !important; overflow-y: auto">
+      {%for i in lista%}
+      <tr style="width: 100%">
+        <td scope="col" style="width: 7%">{{i["codigo"]}}</td>
+        <td scope="col" style="width: 14%">{{i["nombre"]}}</td>
+        <td scope="col" style="width: 14%">{{i["docente"]}}</td>
+        <td scope="col" style="width: 7%">{{i["curso"]}}</td>
+        <td scope="col" style="width: 16%">{{i["horario"]}}</td>
+        <td scope="col" style="width: 34%">{{i["dias"]}}</td>
+        <td style="width: 10%">
+          <a href="/grupo/ver/{{i.codigo}}" class="iconos">
+            <i class="fa-regular fa-eye" style="color: #08f"></i>
+          </a>
+          {%if rol.rol == "Administrador"%}
+          <a href="/grupo/editar/{{i.codigo}}" class="iconos">
+            <i class="fa-regular fa-pen-to-square" style="color: #08f"></i>
+          </a>
+          <a href="/grupo/eliminar/{{i.codigo}}" class="iconos">
+            <i class="fa-solid fa-trash" style="color: #08f"></i>
+          </a>
+          {%endif%}
+        </td>
+      </tr>
+      {%endfor%}
+    </tbody>
+  </table>
+  {%endblock%}
+</div>
