@@ -28,5 +28,3 @@ class Cargador:
                 estudiantes_repetidos.append(estudiante)
         
         session.commit()
-archivo = filedialog.askopenfilename(filetypes=[("Archivos de Excel", ["*.xlsx", "*.xls"])])
-Cargador(archivo)

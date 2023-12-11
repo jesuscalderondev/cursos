@@ -4,5 +4,74 @@
 
 .iconos{
     font-size: 1.2rem;
-    padding: 5px 0;
+    padding: 0px 2px;
+}
+
+.scroll thead tr th{
+    height: 45px!important;
+  }
+  
+  table.scroll tbody,
+  table.scroll thead tr {
+    display: block;
+}
+
+table.scroll tbody{
+    display:grid;
+    grid-column: 1fr;
+    position: relative;
+}
+table.scroll thead tr{
+  width: 100%;
+  min-width: 90%;
+  display: flex;
+  flex-wrap: nowrap;
+}
+table.scroll tbody tr{
+  width: 100%;
+  min-width: 90%;
+  display: flex;
+  flex-wrap: nowrap;
+}
+  table.scroll tbody tr td{
+    display: inline-block;
+    height: 45px;
+  }
+  table.scroll tbody.wrapper {
+    width: 100%;
+    min-width: 90%;
+    overflow-y: auto;
+  }
+  .w7{
+      width: 7%;
+  }
+  .w7-5{
+      width: 7.5%;
+  }
+  .w10{
+    width: 10%;
+}
+.w16{
+    width: 16%;
+}
+.w14{
+    width: 14%;
+}
+.w17{
+    width: 17%;
+}
+.w15{
+    width: 15%;
+}
+.w20{
+    width: 20%;
+}
+.w34{
+    width: 34%;
+}
+.w35{
+    width: 25%;
+}
+.w100{
+    width: 100%;
 }

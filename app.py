@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, jsonify, Blueprint, request
 from flask import session as nube
 from database import *
 from funciones import *
+from cargadorEstudiantes2 import Cargador
 
 app = Flask("Servidor")
 app.config["SECRET_KEY"] = "KJSDKLDSJBNCDSBS"
@@ -18,6 +19,12 @@ def index():
             rol = session.get(Usuario, docente.usuario)
         return renderizarTemplate('docente.html')
     return render_template('index.html')
+
+@app.route('/cerrar_sesion')
+def cerrarSesion():
+    if validarSesion():
+        nube.pop('llave_ingreso')
+    return redirect("/")
 
 @app.route('/inicio_sesion', methods = ['POST'])
 def iniciarSesion():
@@ -50,26 +57,33 @@ def registrarAdministrador():
     if request.method == 'POST':
         formulario = request.form
         print(formulario)
-        crearAdministrador(formulario)
-        return "Exitosamente creado el administrador"
+        try:
+            crearAdministrador(formulario)
+            return "Exitosamente creado el administrador"
+        except:
+            return "Error, el correo electronico ya se encuentra en uso"
     else:
         return render_template("registrarAdministrador.html")
 
 
-@app.route('/migrar', methods = ['POST'])
+@app.route('/migrar', methods = ['POST', 'GET'])
 def subirEstudiantes():
     respuesta = "Sin acceso a esta acción"
     if validarSesion():
-        archivo = request.files["archivo"]
-        if ".xlsx" in archivo.filename or ".xls" in archivo.filename:
-            try:
+        if request.method == 'POST':
+            archivo = request.files["archivo"]
+            print(archivo)
+            if ".xlsx" in archivo.filename or ".xls" in archivo.filename:
+                
                 Cargador(archivo)
                 respuesta = "Los datos fueron cargados exitosamente a la base de datos "
-            except:
-                respuesta = "Error, verifique que los datos cumplan con los estandares y no hayan campos vacíos"
-        else:
-            respuesta = "El archivo no es un excel por favor verifique que el archivo sea correcto"  
-    return jsonify(mensaje = respuesta)
+                """ except:
+                    respuesta = "Error, verifique que los datos cumplan con los estandares y no hayan campos vacíos" """
+            else:
+                respuesta = "El archivo no es un excel por favor verifique que el archivo sea correcto"  
+            return jsonify(mensaje = respuesta)
+        return renderizarTemplate("migrar.html")
+    return respuesta
 
 #------------------------------------  Cursos ------------------------------------
 cursos = Blueprint("cursos", __name__, url_prefix='/curso')
@@ -112,7 +126,24 @@ def editarCursoFormulario(id):
 def listarGruposDeUnCurso(id):
     if validarSesion():
         grupos = session.query(Grupo).filter(Grupo.curso == id).all()
-        return renderizarLista("listarGrupos.html", grupos)
+        json = []
+        for i in grupos:
+            if i.docente != None:
+                docente = session.get(Docente, i.docente)
+                docente = f'{docente.nombres} {docente.apellido_paterno}'
+            else:
+                docente = "Sin asignar"
+            curso = session.get(Curso, i.curso)
+            print(i.codigo)
+            json.append({
+                'docente' : docente,
+                'curso' : curso.nombre,
+                'nombre' : i.nombre,
+                'horario' : f'{i.hora_inicial} a {i.hora_final}',
+                'dias' : i.dias_de_clases[:-2],
+                'codigo' : i.codigo
+            })
+        return renderizarLista("listarGrupos.html", lista = json)
     return redirect("/")
 
 @cursos.route('/eliminar/<int:id>')
@@ -218,7 +249,7 @@ def filtrarDocente():
         respuesta = json_docentes
     return jsonify(respuesta = "Exitosa", json = json_docentes)
 
-@apis.route('/filtrar_curso')
+@apis.route('/filtrar_curso', methods = ['POST'])
 def filtrarCurso():
     if validarSesion():
         formulario = request.get_json()
@@ -229,10 +260,11 @@ def filtrarCurso():
         json_cursos = {}
         
         for i in cursos_filtrados:
-            json_cursos[f'{i.id}'] = {
+            json_cursos[f'{i.codigo}'] = {
                 'nombre' : i.nombre,
                 'ciclo' : i.ciclo,
-                'duracion' : i.duracion
+                'duracion' : i.duracion,
+                'codigo' : i.codigo
             }
         
         respuesta = json_cursos
