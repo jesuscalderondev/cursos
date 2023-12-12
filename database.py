@@ -6,8 +6,6 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import text
 from datetime import datetime, date, time, timedelta
-from dateutil.parser import parse
-import uuid
 
 engine = create_engine('sqlite:///database.db')
 
